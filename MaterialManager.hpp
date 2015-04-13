@@ -3,16 +3,15 @@
 #include "TextureManager.hpp"
 #include <vector>
 #include <string>
-#include <Eigen/Dense>
 
+#include <glm/glm.hpp>
 struct Material
 {
-	Material(const std::string& name, const Eigen::Vector3f& color, const Eigen::Vector3f& emission, const Texture* cMap, const Texture* nMap, const Texture* sMap) :
+	Material(const std::string& name, const glm::vec3& color, const glm::vec3& emission, const Texture* cMap, const Texture* nMap, const Texture* sMap) :
 			name(name), color(color), emission(emission), colorMap(cMap), normalMap(nMap), specularMap(sMap) { }
 	std::string name;
-	Eigen::Vector3f color;
-
-	Eigen::Vector3f emission;
+	glm::vec3 color;
+	glm::vec3 emission;
 	const Texture* colorMap;
 	const Texture* normalMap;
 	const Texture* specularMap;
