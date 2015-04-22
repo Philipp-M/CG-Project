@@ -3,6 +3,7 @@
 #include <string>
 #include <vector>
 #include <GL/gl.h>
+#include <glm/glm.hpp>
 #include "Shader.hpp"
 
 class ShaderProgram
@@ -16,7 +17,7 @@ private:
 public:
     ShaderProgram(const std::string &name);
 
-    ShaderProgram(const std::string &name, Shader vertex, Shader fragment);
+    ShaderProgram(const std::string &name, const Shader &vertex, const Shader &fragment);
 
     void attachShader(const Shader &shader);
 
@@ -28,6 +29,26 @@ public:
     GLuint attributeLocation(const std::string &str) const;
 
     GLuint uniformLocation(const std::string &str) const;
+
+    void setUniform1f(const std::string &name, GLfloat v0) const;
+
+    void setUniform2f(const std::string &name, GLfloat v0, GLfloat v1) const;
+
+    void setUniform2f(const std::string &name, glm::vec2 v) const;
+
+    void setUniform3f(const std::string &name, GLfloat v0, GLfloat v1, GLfloat v2) const;
+
+    void setUniform3f(const std::string &name, glm::vec3 v) const;
+
+    void setUniform4f(const std::string &name, GLfloat v0, GLfloat v1, GLfloat v2, GLfloat v3) const;
+
+    void setUniform4f(const std::string &name, glm::vec4 v) const;
+
+    void setMatrixUniform4f(const std::string &name, glm::mat4 m) const;
+
+    void bind() const;
+
+    void unbind() const;
 
     GLuint getId() const;
 

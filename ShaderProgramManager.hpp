@@ -13,9 +13,10 @@ private:
 
     ShaderProgramManager()
     { }
-    ~ShaderProgramManager();
 
 public:
+    ~ShaderProgramManager();
+
     static ShaderProgramManager &get();
 
     const ShaderProgram *getShaderById(GLuint id);
@@ -25,13 +26,13 @@ public:
     GLuint addShaderProgram(ShaderProgram *shaderProgram);
 };
 
-ShaderProgramManager &ShaderProgramManager::get()
+inline ShaderProgramManager &ShaderProgramManager::get()
 {
     static ShaderProgramManager instance;
     return instance;
 }
 
-const ShaderProgram *ShaderProgramManager::getShaderById(GLuint id)
+inline const ShaderProgram *ShaderProgramManager::getShaderById(GLuint id)
 {
     std::map<GLuint, ShaderProgram *>::const_iterator it;
     it = shaderProgramMap.find(id);
@@ -59,10 +60,11 @@ inline GLuint ShaderProgramManager::addShaderProgram(ShaderProgram *shaderProgra
         namesIdMap[shaderProgram->getName()] = shaderProgram->getId();
         shaderProgramMap[shaderProgram->getId()] = shaderProgram;
     }
+    return shaderProgram->getId();
 }
 
 inline ShaderProgramManager::~ShaderProgramManager()
 {
-    for(auto kv : shaderProgramMap)
+    for (auto kv : shaderProgramMap)
         delete kv.second;
 }

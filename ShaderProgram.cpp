@@ -1,3 +1,4 @@
+#include <glm/ext.hpp>
 #include <GL/glew.h>
 #include <iostream>
 #include <map>
@@ -17,27 +18,44 @@ void ShaderProgram::attachShader(const Shader &shader)
 
 void ShaderProgram::link()
 {
+    GLint success = 0;
+    GLchar errorLog[1024];
+
+    /* Link shader code into executable shader program */
     glLinkProgram(shaderProgramId);
-    GLint infoLogLength = 0;
 
-    glGetProgramiv(shaderProgramId, GL_INFO_LOG_LENGTH, &infoLogLength);
+    /* Check results of linking step */
+    glGetProgramiv(shaderProgramId, GL_LINK_STATUS, &success);
 
-    if (infoLogLength > 0)
+    if (success == 0)
     {
-        char *infoLog = new char[infoLogLength];
-        GLint charsWritten = 0;
-
-        glGetProgramInfoLog(shaderProgramId, infoLogLength, &charsWritten, infoLog);
-
-        std::cerr << infoLog << std::endl;
-        delete[] infoLog;
-        glGetProgramiv(shaderProgramId, GL_LINK_STATUS, &infoLogLength);
+        glGetProgramInfoLog(shaderProgramId, sizeof(errorLog), NULL, errorLog);
+        std::cerr << "Error linking shader program: " << errorLog << std::endl;
+        exit(1);
     }
-    else
+
+    /* Check if shader program can be executed */
+    glValidateProgram(shaderProgramId);
+    glGetProgramiv(shaderProgramId, GL_VALIDATE_STATUS, &success);
+
+    if (!success)
     {
-        std::cerr << name << ": Program link failed exiting" << std::endl;
-        exit(EXIT_FAILURE);
+        glGetProgramInfoLog(shaderProgramId, sizeof(errorLog), NULL, errorLog);
+        std::cerr << "Invalid shader program: " << errorLog << std::endl;
+        exit(1);
     }
+
+    /* Put linked shader program into drawing pipeline */
+    glUseProgram(shaderProgramId);
+
+}
+
+ShaderProgram::ShaderProgram(const std::string &name, const Shader &vertex, const Shader &fragment) : name(name)
+{
+    shaderProgramId = glCreateProgram();
+    attachShader(vertex);
+    attachShader(fragment);
+    link();
 }
 
 bool ShaderProgram::vertexAttribPointer(const std::string &attribName, GLint size, GLenum type, GLsizei stride, const GLvoid *data,
@@ -69,9 +87,53 @@ GLuint ShaderProgram::uniformLocation(const std::string &name) const
     return (GLuint) loc;
 }
 
-ShaderProgram::ShaderProgram(const std::string &name, Shader vertex, Shader fragment) : name(name)
+
+void ShaderProgram::bind() const
 {
-    attachShader(vertex);
-    attachShader(fragment);
-    link();
+    glUseProgram(shaderProgramId);
+}
+
+void ShaderProgram::unbind() const
+{
+    glUseProgram(0);
+}
+
+void ShaderProgram::setUniform1f(const std::string &name, GLfloat v) const
+{
+    glUniform1f(uniformLocation(name), v);
+}
+
+void ShaderProgram::setUniform2f(const std::string &name, GLfloat v0, GLfloat v1) const
+{
+    glUniform2f(uniformLocation(name), v0, v1);
+}
+
+void ShaderProgram::setUniform2f(const std::string &name, glm::vec2 v) const
+{
+    glUniform2f(uniformLocation(name), v.x, v.y);
+}
+
+void ShaderProgram::setUniform3f(const std::string &name, GLfloat v0, GLfloat v1, GLfloat v2) const
+{
+    glUniform3f(uniformLocation(name), v0, v1, v2);
+}
+
+void ShaderProgram::setUniform3f(const std::string &name, glm::vec3 v) const
+{
+    glUniform3f(uniformLocation(name), v.x, v.y, v.z);
+}
+
+void ShaderProgram::setUniform4f(const std::string &name, GLfloat v0, GLfloat v1, GLfloat v2, GLfloat v3) const
+{
+    glUniform3f(uniformLocation(name), v0, v1, v2);
+}
+
+void ShaderProgram::setUniform4f(const std::string &name, glm::vec4 v) const
+{
+    glUniform4f(uniformLocation(name), v.x, v.y, v.z, v.w);
+}
+
+void ShaderProgram::setMatrixUniform4f(const std::string &name, glm::mat4 m) const
+{
+    glUniformMatrix4fv(uniformLocation(name), 1, GL_FALSE, glm::value_ptr(m));
 }
