@@ -54,9 +54,11 @@ set(SOURCE_FILES
                 Shader.hpp
                 ShaderProgram.cpp
                 ShaderProgram.hpp
-                ShaderProgramManager.hpp)
+                ShaderProgramManager.hpp
+                GlutMainLoop.cpp
+                GlutMainLoop.hpp)
 add_executable(CG_Project1 ${SOURCE_FILES} )
 target_include_directories(CG_Project1 PUBLIC ${EIGEN3_INCLUDE_DIR} ${SDL2_INCLUDE_DIR} ${SDL2_IMAGE_INCLUDE_DIR} ${GLM_INCLUDE_DIR})
-target_link_libraries(CG_Project1 ${SDL2_LIBRARY} ${SDL2_IMAGE_LIBRARY})
+target_link_libraries(CG_Project1 ${SDL2_LIBRARY} ${SDL2_IMAGE_LIBRARY} ${OPENGL_LIBRARIES} ${GLUT_LIBRARY} ${GLEW_LIBRARIES} )
 
 

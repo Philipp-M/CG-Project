@@ -2,14 +2,28 @@
 
 #include <string>
 #include <vector>
+#include "Camera.hpp"
+#include "Model.hpp"
 
-class Scene {
+class Scene
+{
 private:
-    // Camera camera TODO
-    // std::vector<Model> models; TODO
+    Camera camera;
+    std::vector<Model *> models;
+    /**
+     * temprorary variable will hopefully in future be loaded with in the scene loader or
+     * with functions that recognize which material they are inside the obj file
+     */
+    const ShaderProgram *shaderProgram;
 public:
-    Scene(const std::string& filename);
-    bool loadFromFile(const std::string& filename);
+    Scene(const std::string &filename);
+    ~Scene();
+    void draw();
 
+    void addModel(Model *model);
+
+    bool loadFromFile(const std::string &filename);
+
+    Camera & getCamera();
+    Model * getModel(const std::string& name);
 };
-

@@ -8,7 +8,7 @@ Camera::Camera(GLfloat width, GLfloat height, GLfloat nearPlane, GLfloat farPlan
         height(height),
         nearPlane(nearPlane),
         farPlane(farPlane),
-        fieldOfView(fieldOfView),
+        fieldOfView(fieldOfView)
 {
 //    setUpTransMatrix();
 }
@@ -22,7 +22,7 @@ void Camera::setUpTransMatrix()
     transMatrix[3][2] = (GLfloat) (-2.0 * farPlane * nearPlane / (farPlane - nearPlane));*/
 }
 
-glm::vec3 Camera::getPosition()
+glm::vec3 Camera::getPosition() const
 {
     return position;
 }
@@ -39,30 +39,15 @@ glm::mat4 Camera::getTransformationMatrix()
 {
     glm::mat4 retMat = glm::perspective(fieldOfView, width / height, nearPlane, farPlane);
 
-    retMat *= glm::rotate(rotX, glm::vec3(1, 0, 0)) * glm::rotate(rotX, glm::vec3(0, 1, 0)) *
-              glm::rotate(rotX, glm::vec3(0, 0, 1));
+    retMat *= glm::rotate(rotX, glm::vec3(1, 0, 0)) * glm::rotate(rotY, glm::vec3(0, 1, 0)) *
+              glm::rotate(rotZ, glm::vec3(0, 0, 1));
     retMat *= glm::translate(glm::vec3(position.x, position.y, position.z));
     return retMat;
 }
 
-glm::vec3 Camera::getRot()
+glm::vec3 Camera::getRotation() const
 {
     return glm::vec3(rotX, rotY, rotZ);
-}
-
-GLfloat Camera::getRotX()
-{
-    return rotX;
-}
-
-GLfloat Camera::getRotY()
-{
-    return rotY;
-}
-
-GLfloat Camera::getRotZ()
-{
-    return rotZ;
 }
 
 void Camera::setRotation(GLfloat rotX, GLfloat rotY, GLfloat rotZ)

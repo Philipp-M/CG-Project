@@ -2,7 +2,12 @@
 
 #include <GL/gl.h>
 #include <glm/glm.hpp>
-class Camera
+#include <glm/gtc/constants.hpp>
+#include "Entity.hpp"
+
+const GLfloat PI_4 = 0.78539816339744830962;
+
+class Camera : public Entity
 {
 private:
     GLfloat fieldOfView;
@@ -14,17 +19,23 @@ private:
     GLfloat rotX;
     GLfloat rotY;
     GLfloat rotZ;
+
     void setUpTransMatrix();
+
 public:
-    Camera(GLfloat width, GLfloat height, GLfloat clipNear, GLfloat clipFar, GLfloat fieldOfView);
+    Camera(GLfloat width = 1920, GLfloat height = 1080, GLfloat nearPlane = 1, GLfloat farPlane = 50, GLfloat fieldOfView = PI_4);
+
     void setPosition(glm::vec3 position);
+
     void move(glm::vec3 delta);
-    glm::vec3 getPosition();
-    glm::vec3 getRot();
-    GLfloat getRotX();
-    GLfloat getRotY();
-    GLfloat getRotZ();
+
+    glm::vec3 getPosition() const;
+
+    glm::vec3 getRotation() const;
+
     void setRotation(GLfloat rotX, GLfloat rotY, GLfloat rotZ);
+
     void rotate(GLfloat rotX, GLfloat rotY, GLfloat rotZ);
+
     glm::mat4 getTransformationMatrix();
 };

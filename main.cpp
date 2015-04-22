@@ -12,20 +12,18 @@ void init(int argc, char *argv[])
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH);
     glutInitContextVersion(3, 3);
-    //glutInitContextProfile ( GLUT_COMPATIBILITY_PROFILE );
     glutInitContextProfile(GLUT_CORE_PROFILE);
-
+    glewExperimental = GL_TRUE;
     //glutInitContextProfile(GLUT_CORE_PROFILE | GLUT_COMPATIBILITY_PROFILE);
     glutInitWindowSize(800, 600);
     glutInitWindowPosition(400, 400);
     glutCreateWindow("CG Proseminar - Project Merry Go Around!");
-    printf("%s\n", glGetString(GL_SHADING_LANGUAGE_VERSION));
 
     /* Initialize GL extension wrangler */
     GLenum res = glewInit();
     if (res != GLEW_OK)
     {
-        fprintf(stderr, "Error: '%s'\n", glewGetErrorString(res));
+        std::cerr << "Error: " << glewGetErrorString(res) << std::endl;
         exit(EXIT_FAILURE);
     }
 
@@ -36,17 +34,26 @@ void init(int argc, char *argv[])
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LESS);
 }
+
 void onIdle()
 {
     GlutMainLoop::get().onIdle();
 }
+
 void onDisplay()
 {
     GlutMainLoop::get().onDraw();
 }
+
 int main(int argc, char *argv[])
 {
     init(argc, argv);
+    GlutMainLoop::get().init();
+    GLuint VAO;
+    // some intel hd hack...
+    glGenVertexArrays(1, &VAO);
+    glBindVertexArray(VAO);
+
     /* Specify callback functions;enter GLUT event processing loop,
      * handing control over to GLUT */
     glutIdleFunc(onIdle);
