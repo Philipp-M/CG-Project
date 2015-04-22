@@ -1,0 +1,3 @@
+# CG Project
+OpenGL Project for the course 'Computer Graphics'
+At the end there will be a merry-go-around with ultimative effects, like bumpmapping and all this fancy stuff...
