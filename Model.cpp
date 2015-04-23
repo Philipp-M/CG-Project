@@ -27,7 +27,7 @@ void Model::refreshBuffers()
 
 void Model::draw(const ShaderProgram *shaderProgram)
 {
-    if (shaderProgram != nullptr)
+    if (shaderProgram != NULL)
     {
         /**
          * optimization possible with caching the matrix
@@ -43,14 +43,14 @@ void Model::draw(const ShaderProgram *shaderProgram)
         GLint size;
         glGetBufferParameteriv(GL_ELEMENT_ARRAY_BUFFER, GL_BUFFER_SIZE, &size);
         glDrawElements(GL_TRIANGLES, (GLsizei) (size/sizeof(GLuint)), GL_UNSIGNED_INT, 0);
-
     }
 }
 glm::mat4 Model::getTransformationMatrix()
 {
-    glm::mat4 retMat = glm::rotate(rotX, glm::vec3(1, 0, 0)) * glm::rotate(rotY, glm::vec3(0, 1, 0)) *
+    glm::mat4 retMat = glm::translate(glm::vec3(position.x, position.y, position.z));
+    retMat *= glm::rotate(rotX, glm::vec3(1, 0, 0)) * glm::rotate(rotY, glm::vec3(0, 1, 0)) *
               glm::rotate(rotZ, glm::vec3(0, 0, 1));
-    retMat *= glm::translate(glm::vec3(position.x, position.y, position.z));
+    //retMat *= glm::translate(glm::vec3(position.x, position.y, position.z));
     return retMat;
 
 }

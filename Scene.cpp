@@ -1,4 +1,6 @@
+#include <cstddef>
 #include <glm/ext.hpp>
+#include "Shader.hpp"
 #include "picojson.hpp"
 #include "Scene.hpp"
 #include "ShaderProgramManager.hpp"
@@ -6,16 +8,16 @@
 Scene::Scene(const std::string &filename)
 {
     GLuint shaderId = ShaderProgramManager::get().addShaderProgram(
-            new ShaderProgram("default", Shader("vertex", "vertexshader.vs", Shader::ShaderType::VERTEX),
-                              Shader("fragment", "fragmentshader.fs", Shader::ShaderType::FRAGMENT)));
+            new ShaderProgram("default", Shader("vertex", "vertexshader.vs", VERTEX),
+                              Shader("fragment", "fragmentshader.fs", FRAGMENT)));
     shaderProgram = ShaderProgramManager::get().getShaderById(shaderId);
     loadFromFile(filename);
 }
 
 Scene::~Scene()
 {
-    for(auto model : models)
-        delete model;
+    for (std::vector<Model*>::iterator it=models.begin(); it!=models.end(); ++it)
+        delete (*it);
 }
 bool Scene::loadFromFile(const std::string &filename)
 {
@@ -27,7 +29,7 @@ bool Scene::loadFromFile(const std::string &filename)
  */
 void Scene::addModel(Model *model)
 {
-    if (model != nullptr)
+    if (model != NULL)
         models.push_back(model);
 }
 
@@ -35,10 +37,10 @@ void Scene::draw()
 {
     shaderProgram->bind();
     shaderProgram->setMatrixUniform4f("ViewMatrix", camera.getTransformationMatrix());
-    for (auto model : models)
+    for (std::vector<Model*>::iterator it=models.begin(); it!=models.end(); ++it)
     {
-        if(model != nullptr)
-            model->draw(shaderProgram);
+        if((*it)!= NULL)
+            (*it)->draw(shaderProgram);
     }
     shaderProgram->unbind();
 }
@@ -50,11 +52,11 @@ Camera &Scene::getCamera()
 
 Model *Scene::getModel(const std::string &name)
 {
-    for (auto model : models)
+    for (std::vector<Model*>::iterator it=models.begin(); it!=models.end(); ++it)
     {
-        if (model != nullptr && model->getName() == name)
-            return model;
+        if (*it != NULL && (*it)->getName() == name)
+            return *it;
     }
-    return nullptr;
+    return NULL;
 }
 

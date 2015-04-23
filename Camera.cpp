@@ -39,9 +39,9 @@ glm::mat4 Camera::getTransformationMatrix()
 {
     glm::mat4 retMat = glm::perspective(fieldOfView, width / height, nearPlane, farPlane);
 
+    retMat *= glm::translate(glm::vec3(position.x, position.y, position.z));
     retMat *= glm::rotate(rotX, glm::vec3(1, 0, 0)) * glm::rotate(rotY, glm::vec3(0, 1, 0)) *
               glm::rotate(rotZ, glm::vec3(0, 0, 1));
-    retMat *= glm::translate(glm::vec3(position.x, position.y, position.z));
     return retMat;
 }
 

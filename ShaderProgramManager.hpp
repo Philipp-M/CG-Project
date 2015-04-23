@@ -1,8 +1,9 @@
 #pragma once
-
+#include <cstddef>
 #include <GL/gl.h>
 #include <string>
 #include <map>
+#include <stddef.h>
 #include "ShaderProgram.hpp"
 
 class ShaderProgramManager
@@ -40,7 +41,7 @@ inline const ShaderProgram *ShaderProgramManager::getShaderById(GLuint id)
     {
         return shaderProgramMap[id];
     }
-    return nullptr;
+    return NULL;
 }
 
 inline const ShaderProgram *ShaderProgramManager::getShaderByName(const std::string &name)
@@ -65,6 +66,6 @@ inline GLuint ShaderProgramManager::addShaderProgram(ShaderProgram *shaderProgra
 
 inline ShaderProgramManager::~ShaderProgramManager()
 {
-    for (auto kv : shaderProgramMap)
-        delete kv.second;
+    for (std::map<GLuint,ShaderProgram*>::iterator it=shaderProgramMap.begin(); it!=shaderProgramMap.end(); ++it)
+        delete it->second;
 }

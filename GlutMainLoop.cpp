@@ -1,3 +1,4 @@
+#include <cstddef>
 #include <GL/freeglut.h>
 #include "GlutMainLoop.hpp"
 
@@ -13,9 +14,10 @@ void GlutMainLoop::onIdle()
     Camera& camera = scene->getCamera();
     camera.setPosition(glm::vec3(0,0,-5));
     Model* cube = scene->getModel("cube");
-    if(cube != nullptr)
+    if(cube != NULL)
     {
         cube->rotate(0.001,0.0033,0.002);
+        cube->move(glm::vec3(0.001,0.0033,0.002));
     }
     glutPostRedisplay();
 }
@@ -52,8 +54,7 @@ void GlutMainLoop::init()
 
 
     scene = new Scene("");
-    scene->addModel(new Model("cube",vData, iData));
-}
+    scene->addModel(new Model("cube",vData, iData)); }
 
 GlutMainLoop::~GlutMainLoop()
 {

@@ -1,3 +1,6 @@
+
+#include <cstddef>
+#include <cstdlib>
 #include <iostream>
 #include <fstream>
 #include <GL/glew.h>
@@ -53,7 +56,7 @@ GLuint Shader::load(const std::string &filename)
     return shaderId;
 }
 
-Shader::ShaderType const Shader::getType() const
+ShaderType const Shader::getType() const
 {
     return type;
 }

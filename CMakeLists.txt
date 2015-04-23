@@ -2,7 +2,8 @@ cmake_minimum_required(VERSION 2.8)
 project(CG_Project1)
 
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")-DNULL=nullptr
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DNULL=nullptr")
 #########################################################
 # FIND GLUT
 #########################################################
@@ -32,15 +33,15 @@ if (GLEW_FOUND)
     link_libraries(${GLEW_LIBRARIES})
 endif()
 
-find_package(SDL2 REQUIRED)
-find_package(SDL2_image REQUIRED)
+#find_package(SDL2 REQUIRED)
+#find_package(SDL2_image REQUIRED)
 find_package(GLM REQUIRED)
 
 set(SOURCE_FILES
                 main.cpp
                 tiny_obj_loader.cpp
                 tiny_obj_loader.hpp
-                TextureManager.cpp
+                #TextureManager.cpp
                 MaterialManager.hpp
                 picojson.hpp
                 Scene.cpp
@@ -57,8 +58,8 @@ set(SOURCE_FILES
                 ShaderProgramManager.hpp
                 GlutMainLoop.cpp
                 GlutMainLoop.hpp)
-add_executable(CG_Project1 ${SOURCE_FILES} )
+add_executable(CG_Project1 ${SOURCE_FILES} SceneLoader.cpp SceneLoader.hpp)
 target_include_directories(CG_Project1 PUBLIC ${EIGEN3_INCLUDE_DIR} ${SDL2_INCLUDE_DIR} ${SDL2_IMAGE_INCLUDE_DIR} ${GLM_INCLUDE_DIR})
-target_link_libraries(CG_Project1 ${SDL2_LIBRARY} ${SDL2_IMAGE_LIBRARY} ${OPENGL_LIBRARIES} ${GLUT_LIBRARY} ${GLEW_LIBRARIES} )
+target_link_libraries(CG_Project1 ${OPENGL_LIBRARIES} ${GLUT_LIBRARY} ${GLEW_LIBRARIES} )
 
 

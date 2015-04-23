@@ -1,19 +1,16 @@
 #pragma once
 #include <GL/gl.h>
 #include <string>
-
+enum ShaderType
+{
+    VERTEX, FRAGMENT
+};
 class Shader
 {
-public:
-    enum ShaderType
-    {
-        VERTEX, FRAGMENT
-    };
 private:
     GLuint shaderId;
 
     std::string name;
-
 
     ShaderType type;
 
@@ -29,8 +26,5 @@ public:
     const std::string &getName() const;
 
     void setName(std::string &name);
-
-private:
-    void compile(const std::string &source);
 };
 
