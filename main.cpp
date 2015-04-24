@@ -1,7 +1,6 @@
 #include <iostream>
 #include <GL/glew.h>
 #include <GL/freeglut.h>
-#include "picojson.hpp"
 #include "Camera.hpp"
 #include "Model.hpp"
 #include "ShaderProgramManager.hpp"

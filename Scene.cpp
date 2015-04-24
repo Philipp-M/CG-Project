@@ -1,7 +1,7 @@
 #include <cstddef>
+#include <iostream>
 #include <glm/ext.hpp>
 #include "Shader.hpp"
-#include "picojson.hpp"
 #include "Scene.hpp"
 #include "ShaderProgramManager.hpp"
 #include "tiny_obj_loader.hpp"

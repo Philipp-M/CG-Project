@@ -43,7 +43,7 @@ void Model::draw(const ShaderProgram *shaderProgram)
     }
 }
 
-const glm::mat4& Model::getTransformationMatrix() const
+glm::mat4 Model::getTransformationMatrix() const
 {
     return transMat;
 }

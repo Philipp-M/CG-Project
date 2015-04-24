@@ -10,19 +10,9 @@ Camera::Camera(GLfloat width, GLfloat height, GLfloat nearPlane, GLfloat farPlan
         farPlane(farPlane),
         fieldOfView(fieldOfView)
 {
-//    setUpTransMatrix();
 }
 
-void Camera::setUpTransMatrix()
-{
-    /*transMatrix[0][0] = (GLfloat) (1.0 / (tan(fieldOfView / 2.0) * ((double) height / (double) width)));
-    transMatrix[1][1] = (GLfloat) (1.0 / tan(fieldOfView / 2.0));
-    transMatrix[2][2] = -(farPlane + nearPlane) / (farPlane - nearPlane);
-    transMatrix[2][3] = (GLfloat) -1.0;
-    transMatrix[3][2] = (GLfloat) (-2.0 * farPlane * nearPlane / (farPlane - nearPlane));*/
-}
-
-const glm::mat4& Camera::getTransformationMatrix() const
+glm::mat4 Camera::getTransformationMatrix() const
 {
     return glm::perspective(fieldOfView,width/height,nearPlane,farPlane)*transMat;
 }

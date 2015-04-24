@@ -30,5 +30,5 @@ public:
     /*
      * returns the current transformation matrix
      */
-    virtual const glm::mat4& getTransformationMatrix() const = 0;
+    virtual glm::mat4 getTransformationMatrix() const = 0;
 };

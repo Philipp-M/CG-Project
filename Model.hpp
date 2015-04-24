@@ -61,6 +61,6 @@ public:
 
     void resetTransformationMatrix();
 
-    const glm::mat4 &getTransformationMatrix() const;
+    glm::mat4 getTransformationMatrix() const;
 };
 
