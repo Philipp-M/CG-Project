@@ -6,8 +6,10 @@
 class GlutMainLoop
 {
 private:
+    bool horseMDown[20];
     Scene* scene;
-    GlutMainLoop() {};
+
+    GlutMainLoop();
 public:
     ~GlutMainLoop();
     static GlutMainLoop &get();
@@ -18,6 +20,7 @@ public:
 
     void onDraw();
 };
+
 
 inline GlutMainLoop &GlutMainLoop::get()
 {

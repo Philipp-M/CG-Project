@@ -4,7 +4,7 @@
 #include "ShaderProgram.hpp"
 
 Model::Model(const std::string& name,const std::vector<Vertex3> &verticeData, const std::vector<GLuint> &indices) :
-        name(name),verticeData(verticeData), indices(indices)
+        name(name),verticeData(verticeData), indices(indices), position(glm::vec3(0,0,0)), rotX(0), rotY(0), rotZ(0)
 {
     refreshBuffers();
 }

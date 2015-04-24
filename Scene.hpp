@@ -22,8 +22,11 @@ public:
 
     void addModel(Model *model);
 
+    const std::vector<Model *>& getModels();
+
     bool loadFromFile(const std::string &filename);
 
     Camera & getCamera();
     Model * getModel(const std::string& name);
+    static Scene* loadFromObj(const std::string& filename);
 };
