@@ -1,5 +1,4 @@
 #include <cmath>
-#include <cstddef>
 #include <GL/freeglut.h>
 #include "GlutMainLoop.hpp"
 
@@ -32,12 +31,12 @@ void GlutMainLoop::onIdle()
         if (models[i]->getName() == "horse1" || models[i]->getName() == "horse3" || models[i]->getName() == "horse5" ||
             models[i]->getName() == "horse7")
         {
-            models[i]->move(glm::vec3(0, 0, -0.5 + 0.5 * sin(0.001 * glutGet(GLUT_ELAPSED_TIME))));
+            models[i]->move(glm::vec3(0, 0, -0.5 + 0.5 * std::sin(0.001 * glutGet(GLUT_ELAPSED_TIME))));
         }
         if (models[i]->getName() == "horse2" || models[i]->getName() == "horse4" || models[i]->getName() == "horse6" ||
             models[i]->getName() == "horse8")
         {
-            models[i]->move(glm::vec3(0, 0, -0.5 + 0.5 * sin(0.0015 * glutGet(GLUT_ELAPSED_TIME))));
+            models[i]->move(glm::vec3(0, 0, -0.5 + 0.5 * std::sin(0.0015 * glutGet(GLUT_ELAPSED_TIME))));
         }
 
     }

@@ -14,7 +14,6 @@ void init(int argc, char *argv[])
     glutInitContextVersion(3, 3);
     glutInitContextProfile(GLUT_CORE_PROFILE);
     glewExperimental = GL_TRUE;
-    //glutInitContextProfile(GLUT_CORE_PROFILE | GLUT_COMPATIBILITY_PROFILE);
     glutInitWindowSize(1024, 576);
     glutInitWindowPosition(400, 400);
     glutCreateWindow("CG Proseminar - Project Merry Go Around!");

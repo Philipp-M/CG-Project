@@ -42,8 +42,8 @@ set(SOURCE_FILES
                 tiny_obj_loader.cpp
                 tiny_obj_loader.hpp
                 #TextureManager.cpp
-                MaterialManager.hpp
-                picojson.hpp
+                #MaterialManager.hpp
+                #picojson.hpp
                 Scene.cpp
                 Scene.hpp
                 Camera.cpp

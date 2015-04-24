@@ -8,6 +8,8 @@
 
 Scene::Scene(const std::string &filename)
 {
+    // create a new shader program based on the given file names "vertexshader.vs" and "fragmentshader.fs"
+    // add the shader to the shaderProgramManager singleton, for maybe later independent use
     GLuint shaderId = ShaderProgramManager::get().addShaderProgram(
             new ShaderProgram("default", Shader("vertex", "vertexshader.vs", VERTEX),
                               Shader("fragment", "fragmentshader.fs", FRAGMENT)));

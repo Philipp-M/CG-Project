@@ -22,7 +22,7 @@ void Camera::setUpTransMatrix()
     transMatrix[3][2] = (GLfloat) (-2.0 * farPlane * nearPlane / (farPlane - nearPlane));*/
 }
 
-const glm::mat4& Camera::getTransformationMatrix()
+const glm::mat4& Camera::getTransformationMatrix() const
 {
     return glm::perspective(fieldOfView,width/height,nearPlane,farPlane)*transMat;
 }

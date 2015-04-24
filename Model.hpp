@@ -9,6 +9,9 @@
 class Model : public Entity
 {
 public:
+    /**
+     * vertex structure contains the vertex and the corresponding color
+     */
     struct Vertex3
     {
         Vertex3(glm::vec3 v, glm::vec3 c) : vertex(v), color(c)
@@ -22,24 +25,32 @@ private:
     GLuint idVert;
     GLuint idIndices;
     std::string name;
-    /**
-     * maybe not needed and done in Scene...
-     */
-    GLuint shaderProgramId;
     bool bufferObjectsloaded;
     std::vector<Vertex3> verticeData;
     std::vector<GLuint> indices;
     glm::mat4 transMat;
 public:
+    /**
+     * constructs a model with the given name, verticeData and indices
+     */
     Model(const std::string &name, const std::vector<Vertex3> &verticeData, const std::vector<GLuint> &indices);
-
+    /**
+     * refreshes the buffer objects based on the local data(verticeData and indices)
+     */
     void refreshBuffers();
-
+    /**
+     * draws the model to the screen based on the shaderProgram,
+     * the shaderProgram has to have the uniform variables:
+     * mat4 ModelMatrix, atrVec3 Position, atrVec3 Color
+     */
     void draw(const ShaderProgram *shaderProgram);
-
+    /**
+     * returns the name of the model
+     */
     const std::string &getName();
 
     /*** implemented from the interface Entity ***/
+
     void move(glm::vec3 delta);
 
     void rotate(glm::vec3 delta);
@@ -50,6 +61,6 @@ public:
 
     void resetTransformationMatrix();
 
-    const glm::mat4 &getTransformationMatrix();
+    const glm::mat4 &getTransformationMatrix() const;
 };
 

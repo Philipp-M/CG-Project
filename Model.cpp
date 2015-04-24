@@ -29,9 +29,6 @@ void Model::draw(const ShaderProgram *shaderProgram)
 {
     if (shaderProgram != NULL)
     {
-        /**
-         * optimization possible with caching the matrix
-         */
         shaderProgram->setMatrixUniform4f("ModelMatrix", getTransformationMatrix());
         glEnableVertexAttribArray(shaderProgram->attributeLocation("Position"));
         glBindBuffer(GL_ARRAY_BUFFER, idVert);
@@ -46,7 +43,7 @@ void Model::draw(const ShaderProgram *shaderProgram)
     }
 }
 
-const glm::mat4& Model::getTransformationMatrix()
+const glm::mat4& Model::getTransformationMatrix() const
 {
     return transMat;
 }
