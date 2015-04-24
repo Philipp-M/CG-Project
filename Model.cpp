@@ -3,8 +3,8 @@
 #include "Model.hpp"
 #include "ShaderProgram.hpp"
 
-Model::Model(const std::string& name,const std::vector<Vertex3> &verticeData, const std::vector<GLuint> &indices) :
-        name(name),verticeData(verticeData), indices(indices), position(glm::vec3(0,0,0)), rotX(0), rotY(0), rotZ(0)
+Model::Model(const std::string &name, const std::vector<Vertex3> &verticeData, const std::vector<GLuint> &indices) :
+        name(name), verticeData(verticeData), indices(indices), transMat(glm::mat4(1.0))
 {
     refreshBuffers();
 }
@@ -35,61 +35,48 @@ void Model::draw(const ShaderProgram *shaderProgram)
         shaderProgram->setMatrixUniform4f("ModelMatrix", getTransformationMatrix());
         glEnableVertexAttribArray(shaderProgram->attributeLocation("Position"));
         glBindBuffer(GL_ARRAY_BUFFER, idVert);
-        shaderProgram->vertexAttribPointer("Position", 3, GL_FLOAT, sizeof(Vertex3), 0,false);
+        shaderProgram->vertexAttribPointer("Position", 3, GL_FLOAT, sizeof(Vertex3), 0, false);
         glEnableVertexAttribArray(shaderProgram->attributeLocation("Color"));
-        shaderProgram->vertexAttribPointer("Color", 3, GL_FLOAT, sizeof(Vertex3), (void*)sizeof(glm::vec3),false);
+        shaderProgram->vertexAttribPointer("Color", 3, GL_FLOAT, sizeof(Vertex3), (void *) sizeof(glm::vec3), false);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, idIndices);
 
         GLint size;
         glGetBufferParameteriv(GL_ELEMENT_ARRAY_BUFFER, GL_BUFFER_SIZE, &size);
-        glDrawElements(GL_TRIANGLES, (GLsizei) (size/sizeof(GLuint)), GL_UNSIGNED_INT, 0);
+        glDrawElements(GL_TRIANGLES, (GLsizei) (size / sizeof(GLuint)), GL_UNSIGNED_INT, 0);
     }
 }
-glm::mat4 Model::getTransformationMatrix()
-{
-    glm::mat4 retMat = glm::translate(glm::vec3(position.x, position.y, position.z));
-    retMat *= glm::rotate(rotX, glm::vec3(1, 0, 0)) * glm::rotate(rotY, glm::vec3(0, 1, 0)) *
-              glm::rotate(rotZ, glm::vec3(0, 0, 1));
-    //retMat *= glm::translate(glm::vec3(position.x, position.y, position.z));
-    return retMat;
 
-}
-void Model::rotate(GLfloat rotX, GLfloat rotY, GLfloat rotZ)
+const glm::mat4& Model::getTransformationMatrix()
 {
-    this->rotX += rotX;
-    this->rotY += rotY;
-    this->rotZ += rotZ;
+    return transMat;
 }
 
-void Model::setRotation(GLfloat rotX, GLfloat rotY, GLfloat rotZ)
+void Model::scale(glm::vec3 delta)
 {
-    this->rotX = rotX;
-    this->rotY = rotY;
-    this->rotZ = rotZ;
+    transMat *= glm::scale(delta);
 }
-
-glm::vec3 Model::getRotation() const
+void Model::scale(GLfloat factor)
 {
-    return glm::vec3(rotX, rotY, rotZ);
+    scale(glm::vec3(factor,factor,factor));
 }
-
-glm::vec3 Model::getPosition() const
+void Model::rotate(glm::vec3 delta)
 {
-    return position;
+    transMat *= glm::rotate(delta.x, glm::vec3(1, 0, 0)) * glm::rotate(delta.y, glm::vec3(0, 1, 0)) *
+                glm::rotate(delta.z, glm::vec3(0, 0, 1));
 }
 
 void Model::move(glm::vec3 delta)
 {
-    position += delta;
+    transMat *= glm::translate(delta);
 }
-
-void Model::setPosition(glm::vec3 position)
-{
-    this->position = position;
-}
-
 
 const std::string &Model::getName()
 {
     return name;
 }
+
+void Model::resetTransformationMatrix()
+{
+    transMat = glm::mat4(1.0);
+}
+

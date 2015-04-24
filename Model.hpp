@@ -11,10 +11,13 @@ class Model : public Entity
 public:
     struct Vertex3
     {
-        Vertex3(glm::vec3 v, glm::vec3 c) :vertex(v), color(c){}
+        Vertex3(glm::vec3 v, glm::vec3 c) : vertex(v), color(c)
+        { }
+
         glm::vec3 vertex;
         glm::vec3 color;
     };
+
 private:
     GLuint idVert;
     GLuint idIndices;
@@ -26,33 +29,27 @@ private:
     bool bufferObjectsloaded;
     std::vector<Vertex3> verticeData;
     std::vector<GLuint> indices;
-    glm::vec3 position;
-    GLfloat rotX;
-    GLfloat rotY;
-    GLfloat rotZ;
+    glm::mat4 transMat;
 public:
-    Model(const std::string& name, const std::vector<Vertex3> &verticeData, const std::vector<GLuint> &indices);
+    Model(const std::string &name, const std::vector<Vertex3> &verticeData, const std::vector<GLuint> &indices);
 
     void refreshBuffers();
 
     void draw(const ShaderProgram *shaderProgram);
 
-    /*** implemented from the interface Entity ***/
-    void setPosition(glm::vec3 position);
+    const std::string &getName();
 
+    /*** implemented from the interface Entity ***/
     void move(glm::vec3 delta);
 
-    glm::vec3 getPosition() const;
+    void rotate(glm::vec3 delta);
 
-    glm::vec3 getRotation() const;
+    void scale(glm::vec3 delta);
 
-    void setRotation(GLfloat rotX, GLfloat rotY, GLfloat rotZ);
+    void scale(GLfloat delta);
 
-    void rotate(GLfloat rotX, GLfloat rotY, GLfloat rotZ);
+    void resetTransformationMatrix();
 
-    glm::mat4 getTransformationMatrix();
-
-    const std::string& getName();
-
+    const glm::mat4 &getTransformationMatrix();
 };
 

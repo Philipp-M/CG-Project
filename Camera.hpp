@@ -11,10 +11,15 @@ class Camera : public Entity
 {
 private:
     GLfloat fieldOfView;
+public:
+
+
+private:
     GLfloat width;
     GLfloat height;
     GLfloat nearPlane;
     GLfloat farPlane;
+    glm::mat4 transMat;
     glm::vec3 position;
     GLfloat rotX;
     GLfloat rotY;
@@ -25,17 +30,23 @@ private:
 public:
     Camera(GLfloat width = 1920, GLfloat height = 1080, GLfloat nearPlane = 1, GLfloat farPlane = 50, GLfloat fieldOfView = PI_4);
 
-    void setPosition(glm::vec3 position);
-
     void move(glm::vec3 delta);
 
-    glm::vec3 getPosition() const;
+    void rotate(glm::vec3 delta);
 
-    glm::vec3 getRotation() const;
+    void scale(glm::vec3 factor);
 
-    void setRotation(GLfloat rotX, GLfloat rotY, GLfloat rotZ);
+    void scale(GLfloat factor);
 
-    void rotate(GLfloat rotX, GLfloat rotY, GLfloat rotZ);
+    void resetTransformationMatrix();
 
-    glm::mat4 getTransformationMatrix();
+    const glm::mat4 &getTransformationMatrix();
+
+    GLfloat getWidth() const;
+
+    void setWidth(GLfloat width);
+
+    GLfloat getHeight() const;
+
+    void setHeight(GLfloat height);
 };

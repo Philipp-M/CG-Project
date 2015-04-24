@@ -22,43 +22,53 @@ void Camera::setUpTransMatrix()
     transMatrix[3][2] = (GLfloat) (-2.0 * farPlane * nearPlane / (farPlane - nearPlane));*/
 }
 
-glm::vec3 Camera::getPosition() const
+const glm::mat4& Camera::getTransformationMatrix()
 {
-    return position;
+    return glm::perspective(fieldOfView,width/height,nearPlane,farPlane)*transMat;
 }
 
-void Camera::setPosition(glm::vec3 position)
+void Camera::scale(glm::vec3 delta)
 {
-    this->position = position;
+    transMat *= glm::scale(delta);
 }
+
+void Camera::scale(GLfloat factor)
+{
+    scale(glm::vec3(factor,factor,factor));
+}
+void Camera::rotate(glm::vec3 delta)
+{
+    transMat *= glm::rotate(delta.x, glm::vec3(1, 0, 0)) * glm::rotate(delta.y, glm::vec3(0, 1, 0)) *
+                glm::rotate(delta.z, glm::vec3(0, 0, 1));
+}
+
 void Camera::move(glm::vec3 delta)
 {
-    this->position += delta;
-}
-glm::mat4 Camera::getTransformationMatrix()
-{
-    glm::mat4 retMat = glm::perspective(fieldOfView, width / height, nearPlane, farPlane);
-
-    retMat *= glm::translate(glm::vec3(position.x, position.y, position.z));
-    retMat *= glm::rotate(rotX, glm::vec3(1, 0, 0)) * glm::rotate(rotY, glm::vec3(0, 1, 0)) *
-              glm::rotate(rotZ, glm::vec3(0, 0, 1));
-    return retMat;
+    transMat *= glm::translate(delta);
 }
 
-glm::vec3 Camera::getRotation() const
+void Camera::resetTransformationMatrix()
 {
-    return glm::vec3(rotX, rotY, rotZ);
+    transMat = glm::mat4(1.0);
 }
 
-void Camera::setRotation(GLfloat rotX, GLfloat rotY, GLfloat rotZ)
+GLfloat Camera::getWidth() const
 {
-    this->rotX = rotX;
-    this->rotY = rotY;
-    this->rotZ = rotZ;
+    return width;
 }
-void Camera::rotate(GLfloat rotX, GLfloat rotY, GLfloat rotZ)
+
+void Camera::setWidth(GLfloat width)
 {
-    this->rotX += rotX;
-    this->rotY += rotY;
-    this->rotZ += rotZ;
+    Camera::width = width;
 }
+
+GLfloat Camera::getHeight() const
+{
+    return height;
+}
+
+void Camera::setHeight(GLfloat height)
+{
+    Camera::height = height;
+}
+
