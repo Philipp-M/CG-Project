@@ -86,7 +86,7 @@ Scene *Scene::loadFromObj(const std::string &filename)
             // color is not correct, there needs to be done more, since it's bound to the indices instead of the vertices...
             vData.push_back(Model::Vertex3(glm::vec3(shapes[i].mesh.positions[f * 3 + 0],
                                                      shapes[i].mesh.positions[f * 3 + 1],
-                                                     shapes[i].mesh.positions[f * 3 + 2]),
+                                                     shapes[i].mesh.positions[f * 3 + 2]), glm::vec3(0),
                                            glm::vec3(materials[shapes[i].mesh.material_ids[0]].diffuse[0],
                                                      materials[shapes[i].mesh.material_ids[0]].diffuse[1],
                                                      materials[shapes[i].mesh.material_ids[0]].diffuse[2])));

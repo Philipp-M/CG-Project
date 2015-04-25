@@ -34,7 +34,7 @@ void Model::draw(const ShaderProgram *shaderProgram)
         glBindBuffer(GL_ARRAY_BUFFER, idVert);
         shaderProgram->vertexAttribPointer("Position", 3, GL_FLOAT, sizeof(Vertex3), 0, false);
         glEnableVertexAttribArray(shaderProgram->attributeLocation("Color"));
-        shaderProgram->vertexAttribPointer("Color", 3, GL_FLOAT, sizeof(Vertex3), (void *) sizeof(glm::vec3), false);
+        shaderProgram->vertexAttribPointer("Color", 3, GL_FLOAT, sizeof(Vertex3), (void *) (2 * sizeof(glm::vec3)), false);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, idIndices);
 
         GLint size;
@@ -52,10 +52,12 @@ void Model::scale(glm::vec3 delta)
 {
     transMat *= glm::scale(delta);
 }
+
 void Model::scale(GLfloat factor)
 {
-    scale(glm::vec3(factor,factor,factor));
+    scale(glm::vec3(factor, factor, factor));
 }
+
 void Model::rotate(glm::vec3 delta)
 {
     transMat *= glm::rotate(delta.x, glm::vec3(1, 0, 0)) * glm::rotate(delta.y, glm::vec3(0, 1, 0)) *

@@ -14,10 +14,11 @@ public:
      */
     struct Vertex3
     {
-        Vertex3(glm::vec3 v, glm::vec3 c) : vertex(v), color(c)
+        Vertex3(glm::vec3 v = glm::vec3(), glm::vec3 n = glm::vec3(), glm::vec3 c = glm::vec3()) : vertex(v), normal(n), color(c)
         { }
 
         glm::vec3 vertex;
+        glm::vec3 normal;
         glm::vec3 color;
     };
 
@@ -34,16 +35,19 @@ public:
      * constructs a model with the given name, verticeData and indices
      */
     Model(const std::string &name, const std::vector<Vertex3> &verticeData, const std::vector<GLuint> &indices);
+
     /**
      * refreshes the buffer objects based on the local data(verticeData and indices)
      */
     void refreshBuffers();
+
     /**
      * draws the model to the screen based on the shaderProgram,
      * the shaderProgram has to have the uniform variables:
      * mat4 ModelMatrix, atrVec3 Position, atrVec3 Color
      */
     void draw(const ShaderProgram *shaderProgram);
+
     /**
      * returns the name of the model
      */
