@@ -15,6 +15,7 @@ private:
      * with functions that recognize which material is inside the obj file
      */
     const ShaderProgram *shaderProgram;
+    void deleteAllModels();
 public:
     Scene(const std::string &filename);
 
@@ -38,6 +39,7 @@ public:
     /**
      * loads a scene based on a scene file written in JSON *WIP*
      */
+
     bool loadFromFile(const std::string &filename);
 
     /**

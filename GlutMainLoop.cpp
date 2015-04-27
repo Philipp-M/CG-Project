@@ -18,9 +18,6 @@ void GlutMainLoop::onIdle()
     Camera &camera = scene->getCamera();
     camera.setWidth(glutGet(GLUT_WINDOW_WIDTH));
     camera.setHeight(glutGet(GLUT_WINDOW_HEIGHT));
-    camera.resetTransformationMatrix();
-    camera.move(glm::vec3(0, -2, -10));
-    camera.rotate(glm::vec3(M_PI / 2, 0, 0));
     const std::vector<Model *> &models = scene->getModels();
     for (int i = 0; i < models.size(); i++)
     {
@@ -43,7 +40,7 @@ void GlutMainLoop::onIdle()
 
 void GlutMainLoop::init()
 {
-    scene = Scene::loadFromObj("merry.obj");
+    scene = new Scene("merry.json");
 }
 
 GlutMainLoop::~GlutMainLoop()

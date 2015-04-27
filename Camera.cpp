@@ -8,7 +8,8 @@ Camera::Camera(GLfloat width, GLfloat height, GLfloat nearPlane, GLfloat farPlan
         height(height),
         nearPlane(nearPlane),
         farPlane(farPlane),
-        fieldOfView(fieldOfView)
+        fieldOfView(fieldOfView),
+        transMat(glm::mat4(1.0))
 {
 }
 

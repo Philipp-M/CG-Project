@@ -46,8 +46,6 @@ set(SOURCE_FILES
                 #picojson.hpp
                 Scene.cpp
                 Scene.hpp
-                SceneLoader.cpp
-                SceneLoader.hpp
                 Camera.cpp
                 Camera.hpp
                 Model.cpp

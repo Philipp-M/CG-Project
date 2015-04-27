@@ -1,5 +1,5 @@
-# Blender MTL File: 'None'
-# Material Count: 10
+# Blender MTL File: 'merry.blend'
+# Material Count: 11
 
 newmtl ground
 Ns 92.156863
@@ -51,6 +51,16 @@ illum 2
 map_Kd horse/color1.jpg
 
 newmtl h_pink
+Ns 92.156863
+Ka 0.000000 0.000000 0.000000
+Kd 0.512000 0.000000 0.222883
+Ks 0.500000 0.500000 0.500000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd horse/color1.jpg
+
+newmtl h_pink_color1.jpg.004
 Ns 92.156863
 Ka 0.000000 0.000000 0.000000
 Kd 0.512000 0.000000 0.222883
