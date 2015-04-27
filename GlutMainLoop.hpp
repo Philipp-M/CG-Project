@@ -6,7 +6,6 @@
 class GlutMainLoop
 {
 private:
-    bool horseMDown[20];
     Scene* scene;
 
     GlutMainLoop();
