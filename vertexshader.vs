@@ -11,6 +11,6 @@ out vec4 vColor;
 
 void main()
 {
-   gl_Position = ViewMatrix*ModelMatrix*vec4(Position.x, Position.y, Position.z, 1.0);
-   vColor = vec4(Color.r, Color.g, Color.b, 1.0);
+	gl_Position = ViewMatrix*ModelMatrix*vec4(Position.x, Position.y, Position.z, 1.0);
+	vColor = vec4(Color.r, Color.g, Color.b, 1.0);
 }

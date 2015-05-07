@@ -11,57 +11,57 @@ class ShaderProgram
 private:
 public:
 private:
-    GLuint shaderProgramId;
-    std::string name;
-    std::vector<Shader> shaders;
+	GLuint shaderProgramId;
+	std::string name;
+	std::vector<Shader> shaders;
 public:
-    ShaderProgram(const std::string &name);
+	ShaderProgram(const std::string &name);
 
-    ShaderProgram(const std::string &name, const Shader &vertex, const Shader &fragment);
+	ShaderProgram(const std::string &name, const Shader &vertex, const Shader &fragment);
 
-    void attachShader(const Shader &shader);
+	void attachShader(const Shader &shader);
 
-    void link();
+	void link();
 
-    bool vertexAttribPointer(const std::string &attribName, GLint size, GLenum type, GLsizei stride, const GLvoid *data,
-                             bool normalize) const;
+	bool vertexAttribPointer(const std::string &attribName, GLint size, GLenum type, GLsizei stride, const GLvoid *data,
+	                         bool normalize) const;
 
-    GLuint attributeLocation(const std::string &str) const;
+	GLuint attributeLocation(const std::string &str) const;
 
-    GLuint uniformLocation(const std::string &str) const;
+	GLuint uniformLocation(const std::string &str) const;
 
-    void setUniform1f(const std::string &name, GLfloat v0) const;
+	void setUniform1f(const std::string &name, GLfloat v0) const;
 
-    void setUniform2f(const std::string &name, GLfloat v0, GLfloat v1) const;
+	void setUniform2f(const std::string &name, GLfloat v0, GLfloat v1) const;
 
-    void setUniform2f(const std::string &name, glm::vec2 v) const;
+	void setUniform2f(const std::string &name, glm::vec2 v) const;
 
-    void setUniform3f(const std::string &name, GLfloat v0, GLfloat v1, GLfloat v2) const;
+	void setUniform3f(const std::string &name, GLfloat v0, GLfloat v1, GLfloat v2) const;
 
-    void setUniform3f(const std::string &name, glm::vec3 v) const;
+	void setUniform3f(const std::string &name, glm::vec3 v) const;
 
-    void setUniform4f(const std::string &name, GLfloat v0, GLfloat v1, GLfloat v2, GLfloat v3) const;
+	void setUniform4f(const std::string &name, GLfloat v0, GLfloat v1, GLfloat v2, GLfloat v3) const;
 
-    void setUniform4f(const std::string &name, glm::vec4 v) const;
+	void setUniform4f(const std::string &name, glm::vec4 v) const;
 
-    void setMatrixUniform4f(const std::string &name, glm::mat4 m) const;
+	void setMatrixUniform4f(const std::string &name, glm::mat4 m) const;
 
-    void bind() const;
+	void bind() const;
 
-    void unbind() const;
+	void unbind() const;
 
-    GLuint getId() const;
+	GLuint getId() const;
 
-    const std::string &getName() const;
+	const std::string &getName() const;
 };
 
 inline GLuint ShaderProgram::getId() const
 {
-    return shaderProgramId;
+	return shaderProgramId;
 }
 
 inline const std::string &ShaderProgram::getName() const
 {
-    return name;
+	return name;
 }
 

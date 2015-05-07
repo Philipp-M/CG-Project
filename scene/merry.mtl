@@ -1,110 +1,121 @@
-# Blender MTL File: 'merry.blend'
-# Material Count: 11
+# Blender MTL File: 'None'
+# Material Count: 12
 
 newmtl ground
-Ns 92.156863
+Ns 86.274510
 Ka 0.000000 0.000000 0.000000
-Kd 0.512000 0.098784 0.000000
+Kd 0.179846 0.179846 0.179846
 Ks 0.500000 0.500000 0.500000
 Ni 1.000000
 d 1.000000
 illum 2
+map_Kd textures/floor_diffuse.jpg
 
 newmtl h_blue
-Ns 92.156863
+Ns 86.274510
 Ka 0.000000 0.000000 0.000000
-Kd 0.003969 0.000000 0.512000
+Kd 0.003175 0.000000 0.800000
 Ks 0.500000 0.500000 0.500000
 Ni 1.000000
 d 1.000000
 illum 2
-map_Kd horse/color1.jpg
+map_Kd textures/horse_color.jpg
 
 newmtl h_brown
-Ns 92.156863
+Ns 86.274510
 Ka 0.000000 0.000000 0.000000
-Kd 0.226462 0.041250 0.000000
+Kd 0.242708 0.100692 0.000000
 Ks 0.500000 0.500000 0.500000
 Ni 1.000000
 d 1.000000
 illum 2
-map_Kd horse/color1.jpg
+map_Kd textures/horse_color.jpg
 
 newmtl h_cyan
-Ns 92.156863
+Ns 86.274510
 Ka 0.000000 0.000000 0.000000
-Kd 0.000000 0.104867 0.512000
+Kd 0.000000 0.508509 0.800000
 Ks 0.500000 0.500000 0.500000
 Ni 1.000000
 d 1.000000
 illum 2
-map_Kd horse/color1.jpg
+map_Kd textures/horse_color.jpg
 
 newmtl h_green
-Ns 92.156863
+Ns 86.274510
 Ka 0.000000 0.000000 0.000000
-Kd 0.152350 0.640000 0.000000
+Kd 0.201880 0.800000 0.000000
 Ks 0.500000 0.500000 0.500000
 Ni 1.000000
 d 1.000000
 illum 2
-map_Kd horse/color1.jpg
+map_Kd textures/horse_color.jpg
 
 newmtl h_pink
-Ns 92.156863
+Ns 86.274510
 Ka 0.000000 0.000000 0.000000
-Kd 0.512000 0.000000 0.222883
+Kd 0.800000 0.000000 0.800000
 Ks 0.500000 0.500000 0.500000
 Ni 1.000000
 d 1.000000
 illum 2
-map_Kd horse/color1.jpg
+map_Kd textures/horse_color.jpg
 
 newmtl h_pink_color1.jpg.004
-Ns 92.156863
+Ns 86.274510
 Ka 0.000000 0.000000 0.000000
-Kd 0.512000 0.000000 0.222883
+Kd 0.800000 0.000000 0.138371
 Ks 0.500000 0.500000 0.500000
 Ni 1.000000
 d 1.000000
 illum 2
-map_Kd horse/color1.jpg
+map_Kd textures/horse_color.jpg
 
 newmtl h_purp
-Ns 92.156863
+Ns 86.274510
 Ka 0.000000 0.000000 0.000000
-Kd 0.244647 0.000000 0.512000
+Kd 0.294179 0.000000 0.800000
 Ks 0.500000 0.500000 0.500000
 Ni 1.000000
 d 1.000000
 illum 2
-map_Kd horse/color1.jpg
+map_Kd textures/horse_color.jpg
 
 newmtl h_red
-Ns 92.156863
+Ns 86.274510
 Ka 0.000000 0.000000 0.000000
-Kd 0.640000 0.000635 0.000000
+Kd 0.800000 0.000000 0.000000
 Ks 0.500000 0.500000 0.500000
 Ni 1.000000
 d 1.000000
 illum 2
-map_Kd horse/color1.jpg
+map_Kd textures/horse_color.jpg
 
 newmtl h_yellow
-Ns 92.156863
+Ns 86.274510
 Ka 0.000000 0.000000 0.000000
-Kd 0.512000 0.488535 0.000000
+Kd 0.800000 0.720000 0.000000
 Ks 0.500000 0.500000 0.500000
 Ni 1.000000
 d 1.000000
 illum 2
-map_Kd horse/color1.jpg
+map_Kd textures/horse_color.jpg
 
-newmtl top
-Ns 92.156863
+newmtl pole
+Ns 86.274510
 Ka 0.000000 0.000000 0.000000
-Kd 0.512000 0.108308 0.269886
+Kd 0.327680 0.069317 0.172727
 Ks 0.500000 0.500000 0.500000
 Ni 1.000000
 d 1.000000
 illum 2
+
+newmtl wall
+Ns 86.274510
+Ka 0.000000 0.000000 0.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.500000 0.500000 0.500000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd textures/wall_diffuse.jpg

@@ -6,24 +6,26 @@
 class GlutMainLoop
 {
 private:
-    Scene* scene;
+	Scene *scene;
 
-    GlutMainLoop();
+	GlutMainLoop();
+
 public:
-    ~GlutMainLoop();
-    static GlutMainLoop &get();
+	~GlutMainLoop();
 
-    void init();
+	static GlutMainLoop &get();
 
-    void onIdle();
+	void init();
 
-    void onDraw();
+	void onIdle();
+
+	void onDraw();
 };
 
 
 inline GlutMainLoop &GlutMainLoop::get()
 {
-    static GlutMainLoop instance;
-    return instance;
+	static GlutMainLoop instance;
+	return instance;
 }
 

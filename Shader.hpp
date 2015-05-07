@@ -1,30 +1,33 @@
 #pragma once
+
 #include <GL/gl.h>
 #include <string>
+
 enum ShaderType
 {
-    VERTEX, FRAGMENT
+	VERTEX, FRAGMENT
 };
+
 class Shader
 {
 private:
-    GLuint shaderId;
+	GLuint shaderId;
 
-    std::string name;
+	std::string name;
 
-    ShaderType type;
+	ShaderType type;
 
-    GLuint load(const std::string &filename);
+	GLuint load(const std::string &filename);
 
 public:
-    Shader(const std::string &name, const std::string &filename, ShaderType type);
+	Shader(const std::string &name, const std::string &filename, ShaderType type);
 
-    ShaderType const getType() const;
+	ShaderType const getType() const;
 
-    GLuint getShaderId() const;
+	GLuint getShaderId() const;
 
-    const std::string &getName() const;
+	const std::string &getName() const;
 
-    void setName(std::string &name);
+	void setName(std::string &name);
 };
 

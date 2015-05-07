@@ -1,21 +1,21 @@
 {
-  "ObjFilename": "merry.obj",
-  "MtlBasepath": "./",
-  "Camera": {
-    "Width" : 1920,
-    "Height" : 1080,
-    "NearPlane" : 1,
-    "FarPlane" : 50,
-    "FOV" : 45,
-    "Position": [
-      0.0,
-      -2.0,
-      -10.0
-    ],
-    "Rotation": [
-      90.0,
-      0.0,
-      0.0
-    ]
-  }
+	"ObjFilename": "merry.obj",
+	"MtlBasepath": "./",
+	"Camera": {
+		"Width": 1920,
+		"Height": 1080,
+		"NearPlane": 1,
+		"FarPlane": 50,
+		"FOV": 45,
+		"Position": [
+			0.0,
+			-2.0,
+			-10.0
+		],
+		"Rotation": [
+			90.0,
+			0.0,
+			0.0
+		]
+	}
 }
