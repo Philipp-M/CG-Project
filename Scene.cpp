@@ -74,7 +74,8 @@ public:
         vertices.resize(mesh.positions.size());
         for (GLuint i = 0; i < mesh.positions.size() / 3; i++)
         {
-            vertices[i] = Model::Vertex3(glm::vec3(mesh.positions[i*3], mesh.positions[i*3 + 1], mesh.positions[i*3 + 2]), glm::vec3(),
+            vertices[i] = Model::Vertex3(glm::vec3(mesh.positions[i * 3], mesh.positions[i * 3 + 1], mesh.positions[i * 3 + 2]),
+                                         glm::vec3(),
                                          glm::vec3());
             calculateNormalColor(vertices[i], i);
         }
@@ -319,8 +320,18 @@ bool Scene::loadFromFile(const std::string &filename)
     /************** loading all the models **************/
     std::vector<tinyobj::shape_t> shapes;
     std::vector<tinyobj::material_t> materials;
-    err = tinyobj::LoadObj(shapes, materials, objFilename.c_str(), NULL);
 
+    std::string::size_type slash = std::string::npos;
+    std::string::size_type slashTmp = 0;
+    while ((slashTmp = filename.find('/', slashTmp)) != std::string::npos)
+        (slash = slashTmp) && (slashTmp++); // ugly but short ;)
+    std::string basePath;
+    std::cout << (filename.substr(0, slash + 1) + objFilename) << std::endl;
+    if (slash != std::string::npos)
+        err = tinyobj::LoadObj(shapes, materials, (filename.substr(0, slash + 1) + objFilename).c_str(),
+                               (filename.substr(0, slash + 1) + mtlBasepath).c_str());
+    else
+        err = tinyobj::LoadObj(shapes, materials, objFilename.c_str(), mtlBasepath.c_str());
     if (!err.empty())
     {
         std::cerr << err << std::endl;
@@ -331,7 +342,7 @@ bool Scene::loadFromFile(const std::string &filename)
     {
         const std::string &name = shapes[i].name;
         const std::vector<GLuint> &iData = shapes[i].mesh.indices;
-        std::vector<Model::Vertex3> vData(shapes[i].mesh.positions.size()/3);
+        std::vector<Model::Vertex3> vData(shapes[i].mesh.positions.size() / 3);
         VertexBuilder vb(shapes[i].mesh, materials);
         vb.computeVertices(vData);
         std::cout << "adding model: " << name << " with " << shapes[i].mesh.positions.size() << " vertices " << std::endl;
@@ -381,39 +392,6 @@ Model *Scene::getModel(const std::string &name)
             return *it;
     }
     return NULL;
-}
-
-Scene *Scene::loadFromObj(const std::string &filename)
-{
-    std::vector<tinyobj::shape_t> shapes;
-    std::vector<tinyobj::material_t> materials;
-    std::string err = tinyobj::LoadObj(shapes, materials, filename.c_str(), NULL);
-
-    if (!err.empty())
-    {
-        std::cerr << err << std::endl;
-        exit(EXIT_FAILURE);
-    }
-    Scene *retScene = new Scene("");
-    for (size_t i = 0; i < shapes.size(); i++)
-    {
-        const std::string &name = shapes[i].name;
-        const std::vector<GLuint> &iData = shapes[i].mesh.indices;
-        std::vector<Model::Vertex3> vData;
-        for (size_t f = 0; f < shapes[i].mesh.positions.size() / 3; f++)
-        {
-            // color is not correct, there needs to be done more, since it's bound to the indices instead of the vertices...
-            vData.push_back(Model::Vertex3(glm::vec3(shapes[i].mesh.positions[f * 3 + 0],
-                                                     shapes[i].mesh.positions[f * 3 + 1],
-                                                     shapes[i].mesh.positions[f * 3 + 2]), glm::vec3(0),
-                                           glm::vec3(materials[shapes[i].mesh.material_ids[0]].diffuse[0],
-                                                     materials[shapes[i].mesh.material_ids[0]].diffuse[1],
-                                                     materials[shapes[i].mesh.material_ids[0]].diffuse[2])));
-        }
-        std::cout << "adding model: " << name << " with " << shapes[i].mesh.positions.size() << " vertices " << std::endl;
-        retScene->addModel(new Model(name, vData, iData));
-    }
-    return retScene;
 }
 
 const std::vector<Model *> &Scene::getModels()

@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8)
-project(CG_Project1)
+project(CG-Project)
 
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
 #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")-DNULL=nullptr
@@ -58,8 +58,8 @@ set(SOURCE_FILES
                 ShaderProgramManager.hpp
                 GlutMainLoop.cpp
                 GlutMainLoop.hpp)
-add_executable(CG_Project1 ${SOURCE_FILES} )
-target_include_directories(CG_Project1 PUBLIC ${GLM_INCLUDE_DIR})
-target_link_libraries(CG_Project1 ${OPENGL_LIBRARIES} ${GLUT_LIBRARY} ${GLEW_LIBRARIES} )
+add_executable(CG-Project ${SOURCE_FILES} )
+target_include_directories(CG-Project PUBLIC ${GLM_INCLUDE_DIR})
+target_link_libraries(CG-Project ${OPENGL_LIBRARIES} ${GLUT_LIBRARY} ${GLEW_LIBRARIES} )
 
 

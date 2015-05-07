@@ -52,8 +52,4 @@ public:
      */
     Model *getModel(const std::string &name);
 
-    /**
-     * loads a scene based on an obj wavefront file, as temporal replacement to the @loadFromFile method
-     */
-    static Scene *loadFromObj(const std::string &filename);
 };

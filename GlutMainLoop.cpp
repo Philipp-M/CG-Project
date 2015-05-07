@@ -40,7 +40,7 @@ void GlutMainLoop::onIdle()
 
 void GlutMainLoop::init()
 {
-    scene = new Scene("merry.json");
+    scene = new Scene("./scene/merry.json");
 }
 
 GlutMainLoop::~GlutMainLoop()
