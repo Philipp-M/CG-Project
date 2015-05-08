@@ -5,6 +5,7 @@
 #include <vector>
 #include "Entity.hpp"
 #include "ShaderProgram.hpp"
+#include "MaterialManager.hpp"
 
 class Model : public Entity
 {
@@ -14,12 +15,16 @@ public:
 	 */
 	struct Vertex3
 	{
-		Vertex3(glm::vec3 v = glm::vec3(), glm::vec3 n = glm::vec3(), glm::vec3 c = glm::vec3()) : vertex(v), normal(n), color(c)
+		Vertex3(glm::vec3 v = glm::vec3(), glm::vec3 n = glm::vec3(), glm::vec3 c = glm::vec3(), glm::vec2 t = glm::vec2()) : vertex(v),
+		                                                                                                                      normal(n),
+		                                                                                                                      color(c),
+		                                                                                                                      tex(t)
 		{ }
 
 		glm::vec3 vertex;
 		glm::vec3 normal;
 		glm::vec3 color;
+		glm::vec2 tex;
 	};
 
 private:
@@ -29,12 +34,13 @@ private:
 	bool bufferObjectsloaded;
 	std::vector<Vertex3> verticeData;
 	std::vector<GLuint> indices;
+	const Material *material;
 	glm::mat4 transMat;
 public:
 	/**
 	 * constructs a model with the given name, verticeData and indices
 	 */
-	Model(const std::string &name, const std::vector<Vertex3> &verticeData, const std::vector<GLuint> &indices);
+	Model(const std::string &name, const std::vector<Vertex3> &verticeData, const std::vector<GLuint> &indices, const Material *mat);
 
 	/**
 	 * refreshes the buffer objects based on the local data(verticeData and indices)

@@ -15,7 +15,7 @@ struct Material
 	{ }
 
 	std::string name;
-	glm::vec3 color;
+	glm::vec3 color; // is not really used since the model saves the color vertice wise
 	glm::vec3 specColor;
 	//glm::vec3 emission; // difficult to handle in simple opengl...
 	const Texture *colorMap;
@@ -28,17 +28,16 @@ class MaterialManager
 public:
 	static MaterialManager &get();
 
-	uint16_t addMaterial(const Material &material);
+	uint16_t addMaterial(Material* material);
 
 	const Material *getByID(uint16_t id);
-
 
 	const Material *getByName(const std::string &name);
 
 	void deleteAllMaterials();
 
 private:
-	std::vector<Material> materials;
+	std::vector<Material*> materials;
 
 	MaterialManager()
 	{ }
@@ -50,21 +49,23 @@ private:
 };
 
 inline void MaterialManager::deleteAllMaterials()
-{ materials.clear(); }
+{
+	materials.clear();
+}
 
 inline const Material *MaterialManager::getByName(const std::string &name)
 {
-	for (std::vector<Material>::iterator it = materials.begin(); it != materials.end(); ++it)
-		if ((*it).name == name)
-			return &(*it);
+	for (std::vector<Material*>::iterator it = materials.begin(); it != materials.end(); ++it)
+		if ((*it)->name == name)
+			return *it;
 }
 
 inline const Material *MaterialManager::getByID(uint16_t id)
 {
-	return materials.size() <= id ? NULL : &materials[id];
+	return materials.size() <= id ? NULL : materials[id];
 }
 
-inline uint16_t MaterialManager::addMaterial(const Material &material)
+inline uint16_t MaterialManager::addMaterial(Material* material)
 {
 	materials.push_back(material);
 	return materials.size() - 1;

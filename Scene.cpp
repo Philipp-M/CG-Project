@@ -78,7 +78,8 @@ public:
 		{
 			vertices[i] = Model::Vertex3(glm::vec3(mesh.positions[i * 3], mesh.positions[i * 3 + 1], mesh.positions[i * 3 + 2]),
 			                             glm::vec3(),
-			                             glm::vec3());
+			                             glm::vec3(),
+			                             glm::vec2(mesh.texcoords[i * 2], 1.0-mesh.texcoords[i * 2 + 1]));
 			calculateNormalColor(vertices[i], i);
 		}
 	}
@@ -342,35 +343,35 @@ bool Scene::loadFromFile(const std::string &filename)
 	deleteAllModels();
 	TextureManager::get().deleteAllTextures();
 	MaterialManager::get().deleteAllMaterials();
-
+	TextureManager &tm = TextureManager::get();
+	tm.loadTexture("./scene/textures/defaultDif.png");
+	tm.loadTexture("./scene/textures/defaultSpec.png");
+	tm.loadTexture("./scene/textures/defaultNorm.png");
 
 	/************** load all the materials **************/
 
 	for (std::vector<tinyobj::material_t>::iterator it = materials.begin(); it != materials.end(); ++it)
 	{
-		TextureManager& tm = TextureManager::get();
-		const Texture* texDif = NULL;
-		const Texture* texSpec = NULL;
-		const Texture* texNorm = NULL;
+		const Texture *texDif = NULL;
+		const Texture *texSpec = NULL;
+		const Texture *texNorm = NULL;
 
 		if (slash != std::string::npos && it->diffuse_texname != "")
 			texDif = tm.getByID(tm.loadTexture(filename.substr(0, slash + 1) + it->diffuse_texname));
-		else if(it->diffuse_texname != "")
+		else if (it->diffuse_texname != "")
 			texDif = tm.getByID(tm.loadTexture(it->diffuse_texname));
 
 		if (slash != std::string::npos && it->specular_texname != "")
 			texSpec = tm.getByID(tm.loadTexture(filename.substr(0, slash + 1) + it->specular_texname));
-		else if(it->specular_texname != "")
+		else if (it->specular_texname != "")
 			texSpec = tm.getByID(tm.loadTexture(it->specular_texname));
 
 		if (slash != std::string::npos && it->normal_texname != "")
 			texNorm = tm.getByID(tm.loadTexture(filename.substr(0, slash + 1) + it->normal_texname));
-		else if(it->normal_texname != "")
+		else if (it->normal_texname != "")
 			texNorm = tm.getByID(tm.loadTexture(it->normal_texname));
-
-		Material mat(it->name, glm::vec3(it->diffuse[0],it->diffuse[1],it->diffuse[2]),glm::vec3(it->specular[0],it->specular[1],it->specular[2]), texDif, texNorm, texSpec);
-		MaterialManager::get().addMaterial(mat);
-		std::cout << "adding material: '" << mat.name << "'" << std::endl;
+		MaterialManager::get().addMaterial(new Material(it->name, glm::vec3(it->diffuse[0], it->diffuse[1], it->diffuse[2]),
+		             glm::vec3(it->specular[0], it->specular[1], it->specular[2]), texDif, texNorm, texSpec));
 	}
 	/************** load all the vertices **************/
 	for (size_t i = 0; i < shapes.size(); i++)
@@ -381,7 +382,11 @@ bool Scene::loadFromFile(const std::string &filename)
 		VertexBuilder vb(shapes[i].mesh, materials);
 		vb.computeVertices(vData);
 		std::cout << "adding model: " << name << " with " << shapes[i].mesh.positions.size() << " vertices " << std::endl;
-		addModel(new Model(name, vData, iData));
+		// add the model and attach the first material(makes life easier then handling every connected material)
+		if (shapes[i].mesh.material_ids.size() > 0)
+			addModel(new Model(name, vData, iData, MaterialManager::get().getByName(materials[shapes[i].mesh.material_ids[0]].name)));
+		else
+			addModel(new Model(name, vData, iData, NULL));
 	}
 	/*********** setup Camera ***********/
 	camera = Camera(cameraWidth, cameraHeight, cameraNearPlane, cameraFarPlane, cameraFOV);

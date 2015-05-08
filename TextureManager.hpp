@@ -25,14 +25,7 @@ struct Texture
 class TextureManager
 {
 public:
-	/**
-	 * if the texture manager gets destroyed, it also deletes all the textures it holds...
-	 */
-	virtual ~TextureManager()
-	{
-		for (std::vector<Texture>::iterator it = textures.begin(); it != textures.end(); ++it)
-			free((*it).pixels);
-	}
+	virtual ~TextureManager();
 
 	static TextureManager &get();
 
@@ -51,7 +44,7 @@ public:
 	void deleteAllTextures();
 
 private:
-	std::vector<Texture> textures;
+	std::vector<Texture*> textures;
 
 	// private constructor to prevent instancing
 	TextureManager()
@@ -63,6 +56,11 @@ private:
 	{ } // non copyable
 };
 
+inline TextureManager::~TextureManager()
+{
+	deleteAllTextures();
+}
+
 inline TextureManager &TextureManager::get()
 {
 	static TextureManager instance;
@@ -71,13 +69,13 @@ inline TextureManager &TextureManager::get()
 
 inline const Texture *TextureManager::getByID(uint16_t id)
 {
-	return textures.size() <= id ? NULL : &textures[id];
+	return textures.size() <= id ? NULL : textures[id];
 }
 
 inline int TextureManager::getIDByName(const std::string &name)
 {
 	for (int i = 0; i < textures.size(); i++)
-		if (textures[i].name.compare(name) == 0)
+		if (textures[i]->name == name)
 			return i;
 	return -1;
 }
@@ -90,8 +88,11 @@ inline const Texture *TextureManager::getByName(const std::string &name)
 
 inline void TextureManager::deleteAllTextures()
 {
-	for (std::vector<Texture>::iterator it = textures.begin(); it != textures.end(); ++it)
-		free((*it).pixels);
+	for (std::vector<Texture*>::iterator it = textures.begin(); it != textures.end(); ++it)
+	{
+		free((*it)->pixels);
+		delete *it;
+	}
 	textures.clear();
 }
 
@@ -102,25 +103,29 @@ inline int TextureManager::loadTexture(const std::string &filename)
 	int t = getIDByName(filename);
 	if (t != -1)
 		return t;
-	Texture tex;
+	Texture *tex = new Texture();
 	int width;
 	int height;
-	glGenTextures(1, &tex.id);
-	glBindTexture(GL_TEXTURE_2D, tex.id);
+	glGenTextures(1, &tex->id);
+	glBindTexture(GL_TEXTURE_2D, tex->id);
 
-	tex.name = filename;
-	tex.pixels = SOIL_load_image(filename.c_str(), &width, &height, 0, SOIL_LOAD_RGBA);
-	tex.width = width;
-	tex.height = height;
+	tex->name = filename;
+	tex->pixels = SOIL_load_image(filename.c_str(), &width, &height, 0, SOIL_LOAD_RGB);
+	tex->width = width;
+	tex->height = height;
 
-	if (tex.pixels == NULL)
+	if (tex->pixels == NULL)
 	{
 		std::cout << "An error occurred while loading image '" << filename << "'." << std::endl;
 		exit(EXIT_FAILURE);
 	}
-	// glPixelStorei(GL_UNPACK_ALIGNMENT, 1); // necessary?
+	glPixelStorei(GL_UNPACK_ALIGNMENT, 1); // necessary?
 
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, tex.width, tex.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, tex.pixels);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, tex->pixels);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	textures.push_back(tex);
 	return textures.size() - 1;
 }

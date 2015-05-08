@@ -30,7 +30,9 @@ public:
 
 	GLuint uniformLocation(const std::string &str) const;
 
-	void setUniform1f(const std::string &name, GLfloat v0) const;
+	void setUniform1i(const std::string &name, GLint v) const;
+
+	void setUniform1f(const std::string &name, GLfloat v) const;
 
 	void setUniform2f(const std::string &name, GLfloat v0, GLfloat v1) const;
 
