@@ -8,6 +8,8 @@
 #include "ShaderProgramManager.hpp"
 #include "tiny_obj_loader.hpp"
 #include "picojson.hpp"
+#include "TextureManager.hpp"
+#include "MaterialManager.hpp"
 
 class VertexBuilder
 {
@@ -317,7 +319,7 @@ bool Scene::loadFromFile(const std::string &filename)
 	}
 	/************** finished parsing time for the creation of the scene **************/
 
-	/************** loading all the models **************/
+	/************** load all the models **************/
 	std::vector<tinyobj::shape_t> shapes;
 	std::vector<tinyobj::material_t> materials;
 
@@ -338,6 +340,39 @@ bool Scene::loadFromFile(const std::string &filename)
 		exit(EXIT_FAILURE);
 	}
 	deleteAllModels();
+	TextureManager::get().deleteAllTextures();
+	MaterialManager::get().deleteAllMaterials();
+
+
+	/************** load all the materials **************/
+
+	for (std::vector<tinyobj::material_t>::iterator it = materials.begin(); it != materials.end(); ++it)
+	{
+		TextureManager& tm = TextureManager::get();
+		const Texture* texDif = NULL;
+		const Texture* texSpec = NULL;
+		const Texture* texNorm = NULL;
+
+		if (slash != std::string::npos && it->diffuse_texname != "")
+			texDif = tm.getByID(tm.loadTexture(filename.substr(0, slash + 1) + it->diffuse_texname));
+		else if(it->diffuse_texname != "")
+			texDif = tm.getByID(tm.loadTexture(it->diffuse_texname));
+
+		if (slash != std::string::npos && it->specular_texname != "")
+			texSpec = tm.getByID(tm.loadTexture(filename.substr(0, slash + 1) + it->specular_texname));
+		else if(it->specular_texname != "")
+			texSpec = tm.getByID(tm.loadTexture(it->specular_texname));
+
+		if (slash != std::string::npos && it->normal_texname != "")
+			texNorm = tm.getByID(tm.loadTexture(filename.substr(0, slash + 1) + it->normal_texname));
+		else if(it->normal_texname != "")
+			texNorm = tm.getByID(tm.loadTexture(it->normal_texname));
+
+		Material mat(it->name, glm::vec3(it->diffuse[0],it->diffuse[1],it->diffuse[2]),glm::vec3(it->specular[0],it->specular[1],it->specular[2]), texDif, texNorm, texSpec);
+		MaterialManager::get().addMaterial(mat);
+		std::cout << "adding material: '" << mat.name << "'" << std::endl;
+	}
+	/************** load all the vertices **************/
 	for (size_t i = 0; i < shapes.size(); i++)
 	{
 		const std::string &name = shapes[i].name;

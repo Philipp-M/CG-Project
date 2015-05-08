@@ -32,17 +32,38 @@ if (GLEW_FOUND)
     include_directories(${GLEW_INCLUDE_DIRS})
     link_libraries(${GLEW_LIBRARIES})
 endif()
+##########################################################
+## FIND Image libraries
+##########################################################
+#find_package(PNG REQUIRED)
+#include_directories(${PNG_INCLUDE_DIR})
+#link_libraries(${PNG_LIBRARY})
+#find_package(JPEG REQUIRED)
+#include_directories(${JPEG_INCLUDE_DIR})
+#link_libraries(${JPEG_LIBRARY})
+
 
 #find_package(SDL2 REQUIRED)
 #find_package(SDL2_image REQUIRED)
 find_package(GLM REQUIRED)
+set(SOIL
+			SOIL/SOIL.c
+			SOIL/SOIL.h
+			SOIL/image_DXT.c
+			SOIL/image_DXT.h
+			SOIL/image_helper.c
+			SOIL/image_helper.h
+			SOIL/stb_image_aug.c
+			SOIL/stb_image_aug.h
+			SOIL/stbi_DDS_aug.h
+			SOIL/stbi_DDS_aug_c.h)
 
 set(SOURCE_FILES
                 main.cpp
                 tiny_obj_loader.cpp
                 tiny_obj_loader.hpp
-                #TextureManager.cpp
-                #MaterialManager.hpp
+                TextureManager.hpp
+                MaterialManager.hpp
                 picojson.hpp
                 Scene.cpp
                 Scene.hpp
@@ -58,7 +79,7 @@ set(SOURCE_FILES
                 ShaderProgramManager.hpp
                 GlutMainLoop.cpp
                 GlutMainLoop.hpp)
-add_executable(CG-Project ${SOURCE_FILES} )
+add_executable(CG-Project ${SOURCE_FILES} ${SOIL} )
 target_include_directories(CG-Project PUBLIC ${GLM_INCLUDE_DIR})
 target_link_libraries(CG-Project ${OPENGL_LIBRARIES} ${GLUT_LIBRARY} ${GLEW_LIBRARIES} )
 

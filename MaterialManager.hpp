@@ -8,42 +8,71 @@
 
 struct Material
 {
-	Material(const std::string &name, const glm::vec3 &color, const glm::vec3 &emission, const Texture *cMap, const Texture *nMap,
-	         const Texture *sMap) :
-			name(name), color(color), emission(emission), colorMap(cMap), normalMap(nMap), specularMap(sMap)
+	Material(const std::string &name, const glm::vec3 &color, const glm::vec3 &specColor, const Texture *cMap = NULL,
+	         const Texture *nMap = NULL,
+	         const Texture *sMap = NULL) :
+			name(name), color(color), specColor(specColor), colorMap(cMap), normalMap(nMap), specularMap(sMap)
 	{ }
 
 	std::string name;
 	glm::vec3 color;
-	glm::vec3 emission;
+	glm::vec3 specColor;
+	//glm::vec3 emission; // difficult to handle in simple opengl...
 	const Texture *colorMap;
 	const Texture *normalMap;
 	const Texture *specularMap;
-
 };
 
 class MaterialManager
 {
 public:
-	static MaterialManager &get()
-	{
-		static MaterialManager instance;
-		return instance;
-	}
+	static MaterialManager &get();
 
-	uint16_t addMaterial(const Material &material)
-	{
-		materials.push_back(material);
-		return materials.size() - 1;
-	}
+	uint16_t addMaterial(const Material &material);
 
-	const Material *getByID(uint16_t id)
-	{ return materials.size() <= id ? NULL : &materials[id]; }
+	const Material *getByID(uint16_t id);
+
+
+	const Material *getByName(const std::string &name);
+
+	void deleteAllMaterials();
 
 private:
 	std::vector<Material> materials;
 
 	MaterialManager()
 	{ }
+
+	MaterialManager(const MaterialManager &other)
+	{ } // non construction-copyable
+	MaterialManager &operator=(const MaterialManager &)
+	{ } // non copyable
 };
+
+inline void MaterialManager::deleteAllMaterials()
+{ materials.clear(); }
+
+inline const Material *MaterialManager::getByName(const std::string &name)
+{
+	for (std::vector<Material>::iterator it = materials.begin(); it != materials.end(); ++it)
+		if ((*it).name == name)
+			return &(*it);
+}
+
+inline const Material *MaterialManager::getByID(uint16_t id)
+{
+	return materials.size() <= id ? NULL : &materials[id];
+}
+
+inline uint16_t MaterialManager::addMaterial(const Material &material)
+{
+	materials.push_back(material);
+	return materials.size() - 1;
+}
+
+inline MaterialManager &MaterialManager::get()
+{
+	static MaterialManager instance;
+	return instance;
+}
 
