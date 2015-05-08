@@ -9,7 +9,9 @@
 void init(int argc, char *argv[])
 {
 	glutInit(&argc, argv);
-	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH);
+	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH | GLUT_MULTISAMPLE);
+	glEnable(GL_MULTISAMPLE);
+	glutSetOption(GLUT_MULTISAMPLE, 16);
 	glutInitContextVersion(3, 3);
 	glutInitContextProfile(GLUT_CORE_PROFILE);
 	glewExperimental = GL_TRUE;
