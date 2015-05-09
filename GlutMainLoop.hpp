@@ -9,6 +9,7 @@ private:
 	Scene *scene;
 	bool pressedKeys[256];
 	int lastElapsedtime;
+	float movementSpeed;
 
 	GlutMainLoop();
 

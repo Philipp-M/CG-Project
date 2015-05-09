@@ -2,7 +2,7 @@
 #include <GL/freeglut.h>
 #include "GlutMainLoop.hpp"
 
-GlutMainLoop::GlutMainLoop()
+GlutMainLoop::GlutMainLoop() : movementSpeed(0.005)
 {
 }
 
@@ -20,14 +20,14 @@ void GlutMainLoop::onIdle()
 	cameraSystem.getCamera().setWidth(glutGet(GLUT_WINDOW_WIDTH));
 	cameraSystem.getCamera().setHeight(glutGet(GLUT_WINDOW_HEIGHT));
 	// move the camera
-	if(pressedKeys['w'])
-		cameraSystem.moveForward(deltaElapsedTime*0.005);
-	if(pressedKeys['s'])
-		cameraSystem.moveBackward(deltaElapsedTime*0.005);
-	if(pressedKeys['a'])
-		cameraSystem.moveLeft(deltaElapsedTime*0.005);
-	if(pressedKeys['d'])
-		cameraSystem.moveRight(deltaElapsedTime*0.005);
+	if (pressedKeys['w'])
+		cameraSystem.moveForward(deltaElapsedTime * movementSpeed);
+	if (pressedKeys['s'])
+		cameraSystem.moveBackward(deltaElapsedTime * movementSpeed);
+	if (pressedKeys['a'])
+		cameraSystem.moveLeft(deltaElapsedTime * movementSpeed);
+	if (pressedKeys['d'])
+		cameraSystem.moveRight(deltaElapsedTime * movementSpeed);
 	const std::vector<Model *> &models = scene->getModels();
 	for (int i = 0; i < models.size(); i++)
 	{
@@ -103,6 +103,17 @@ void GlutMainLoop::mouseFunc(int x, int y)
 void GlutMainLoop::keyboardUpFunc(uint8_t k, int x, int y)
 {
 	pressedKeys[k] = false;
+	switch (k)
+	{
+		case '+':
+			movementSpeed *= 1.2;
+			break;
+		case '-':
+			movementSpeed *= 0.8;
+			break;
+		default:
+			break;
+	}
 }
 
 void GlutMainLoop::keyboardFunc(uint8_t k, int x, int y)
