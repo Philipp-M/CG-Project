@@ -114,6 +114,7 @@ Scene::~Scene()
 {
 	for (std::vector<Model *>::iterator it = models.begin(); it != models.end(); ++it)
 		delete (*it);
+	delete cameraSystem;
 }
 
 bool Scene::loadFromFile(const std::string &filename)
@@ -222,7 +223,7 @@ bool Scene::loadFromFile(const std::string &filename)
 						if (j->second.is<double>())
 						{
 							foundCameraNearPlane = true;
-							cameraNearPlane = (int) j->second.get<double>();
+							cameraNearPlane = j->second.get<double>();
 						}
 						else
 						{
@@ -235,7 +236,7 @@ bool Scene::loadFromFile(const std::string &filename)
 						if (j->second.is<double>())
 						{
 							foundCameraFarPlane = true;
-							cameraFarPlane = (int) j->second.get<double>();
+							cameraFarPlane = j->second.get<double>();
 						}
 						else
 						{
@@ -403,9 +404,7 @@ bool Scene::loadFromFile(const std::string &filename)
 			addModel(new Model(name, vData, iData, NULL));
 	}
 	/*********** setup Camera ***********/
-	camera = Camera(cameraWidth, cameraHeight, cameraNearPlane, cameraFarPlane, cameraFOV);
-	camera.move(cameraPosition);
-	camera.rotate(cameraRotation);
+	cameraSystem = new CameraSystem(cameraRotation, cameraPosition, cameraWidth, cameraHeight, cameraNearPlane, cameraFarPlane, cameraFOV);
 }
 
 void Scene::deleteAllModels()
@@ -424,7 +423,7 @@ void Scene::addModel(Model *model)
 void Scene::draw()
 {
 	shaderProgram->bind();
-	shaderProgram->setMatrixUniform4f("ViewMatrix", camera.getTransformationMatrix());
+	shaderProgram->setMatrixUniform4f("ViewMatrix", cameraSystem->getTransformationMatrix());
 	for (std::vector<Model *>::iterator it = models.begin(); it != models.end(); ++it)
 	{
 		if ((*it) != NULL)
@@ -433,9 +432,9 @@ void Scene::draw()
 	shaderProgram->unbind();
 }
 
-Camera &Scene::getCamera()
+CameraSystem &Scene::getCameraSystem()
 {
-	return camera;
+	return *cameraSystem;
 }
 
 Model *Scene::getModel(const std::string &name)

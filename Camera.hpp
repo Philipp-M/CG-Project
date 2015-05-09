@@ -41,4 +41,6 @@ public:
 	void resetTransformationMatrix();
 
 	glm::mat4 getTransformationMatrix() const;
+
+	glm::mat4 getPerspectiveMatrix() const;
 };

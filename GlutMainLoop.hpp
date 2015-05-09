@@ -7,8 +7,18 @@ class GlutMainLoop
 {
 private:
 	Scene *scene;
+	bool pressedKeys[256];
+	int lastElapsedtime;
 
 	GlutMainLoop();
+
+	void mouseFunc(int x, int y);
+
+	static void mouseFuncStatic(int x, int y);
+
+	static void keyboardFuncStatic(uint8_t k, int x, int y);
+
+	static void keyboardUpFuncStatic(uint8_t k, int x, int y);
 
 public:
 	~GlutMainLoop();
@@ -20,6 +30,11 @@ public:
 	void onIdle();
 
 	void onDraw();
+
+	void keyboardFunc(uint8_t k, int x, int y);
+
+	void keyboardUpFunc(uint8_t k, int x, int y);
+
 };
 
 

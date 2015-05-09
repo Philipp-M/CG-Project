@@ -15,7 +15,11 @@ Camera::Camera(GLfloat width, GLfloat height, GLfloat nearPlane, GLfloat farPlan
 
 glm::mat4 Camera::getTransformationMatrix() const
 {
-	return glm::perspective(fieldOfView, width / height, nearPlane, farPlane) * transMat;
+	return transMat;
+}
+glm::mat4 Camera::getPerspectiveMatrix() const
+{
+	return glm::perspective(fieldOfView, width / height, nearPlane, farPlane);
 }
 
 void Camera::scale(glm::vec3 delta)
