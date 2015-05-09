@@ -17,6 +17,7 @@ private:
 	std::vector<GLuint> tempAdjVert;
 	std::vector<glm::vec3> faceNormals;
 	const std::vector<GLuint> &indices;
+	std::vector<std::vector<GLuint> > adjVert;
 	const std::vector<tinyobj::material_t> &materials;
 	const tinyobj::mesh_t &mesh;
 
@@ -29,36 +30,43 @@ private:
 	{
 		faceNormals.reserve(indices.size() / 3);
 		for (GLuint f = 0; f < indices.size() / 3; f++)
+		{
 			faceNormals.push_back(calculateFaceNormal(vertices[indices[f * 3]].vertex, vertices[indices[f * 3 + 1]].vertex,
 			                                          vertices[indices[f * 3 + 2]].vertex));
+
+		}
+	}
+
+	void createSortedIndices()
+	{
+		adjVert.resize(mesh.positions.size()/3);
+		for (size_t f = 0; f < indices.size() / 3; f++)
+		{
+			adjVert[indices[f * 3]].push_back(f);
+			adjVert[indices[f * 3 + 1]].push_back(f);
+			adjVert[indices[f * 3 + 2]].push_back(f);
+		}
 	}
 
 	void calculateNormalColor(Model::Vertex3 &vertex, GLuint id)
 	{
-		GLuint tempAdjVertCount = 0;
-		for (GLuint f = 0; f < indices.size() / 3; f++)
-		{
-			if (indices[f * 3 + 0] == id)
-				tempAdjVert[tempAdjVertCount++] = f;
-			else if (indices[f * 3 + 1] == id)
-				tempAdjVert[tempAdjVertCount++] = f;
-			else if (indices[f * 3 + 2] == id)
-				tempAdjVert[tempAdjVertCount++] = f;
-		}
 		glm::vec3 vn(0);
 		glm::vec3 vc(0);
-		for (int i = 0; i < tempAdjVertCount; i++)
+		for (int i = 0; i < adjVert[id].size(); i++)
 		{
-			GLuint f = tempAdjVert[i];
+			GLuint f = adjVert[id][i];
 			vn += faceNormals[f];
-			vc.r += materials[mesh.material_ids[f]].diffuse[0];
-			vc.g += materials[mesh.material_ids[f]].diffuse[1];
-			vc.b += materials[mesh.material_ids[f]].diffuse[2];
+			if (materials.size() > 0 && mesh.material_ids.size() > 0)
+			{
+				vc.r += materials[mesh.material_ids[f]].diffuse[0];
+				vc.g += materials[mesh.material_ids[f]].diffuse[1];
+				vc.b += materials[mesh.material_ids[f]].diffuse[2];
+			}
 			// maybe add specular color for future...
 		}
 		// should not be zero, just for safety
-		if (tempAdjVertCount != 0)
-			vc /= tempAdjVertCount;
+		if (adjVert[id].size() != 0)
+			vc /= adjVert[id].size();
 		vertex.color = vc;
 		vertex.normal = glm::normalize(vn);
 	}
@@ -72,16 +80,21 @@ public:
 
 	void computeVertices(std::vector<Model::Vertex3> &vertices)
 	{
-		calculateFaceNormals(vertices);
 		vertices.resize(mesh.positions.size());
+		#pragma omp parallel for schedule(dynamic, 1) // OpenMP
 		for (GLuint i = 0; i < mesh.positions.size() / 3; i++)
 		{
 			vertices[i] = Model::Vertex3(glm::vec3(mesh.positions[i * 3], mesh.positions[i * 3 + 1], mesh.positions[i * 3 + 2]),
 			                             glm::vec3(),
-			                             glm::vec3(),
-			                             glm::vec2(mesh.texcoords[i * 2], 1.0-mesh.texcoords[i * 2 + 1]));
-			calculateNormalColor(vertices[i], i);
+			                             glm::vec3());
+			if (mesh.texcoords.size() >= i * 2 + 1)
+				vertices[i].tex = glm::vec2(mesh.texcoords[i * 2], 1.0 - mesh.texcoords[i * 2 + 1]);
 		}
+		calculateFaceNormals(vertices);
+		createSortedIndices();
+		#pragma omp parallel for schedule(dynamic, 1) // OpenMP
+		for (GLuint i = 0; i < mesh.positions.size() / 3; i++)
+			calculateNormalColor(vertices[i], i);
 	}
 };
 
@@ -371,7 +384,8 @@ bool Scene::loadFromFile(const std::string &filename)
 		else if (it->normal_texname != "")
 			texNorm = tm.getByID(tm.loadTexture(it->normal_texname));
 		MaterialManager::get().addMaterial(new Material(it->name, glm::vec3(it->diffuse[0], it->diffuse[1], it->diffuse[2]),
-		             glm::vec3(it->specular[0], it->specular[1], it->specular[2]), texDif, texNorm, texSpec));
+		                                                glm::vec3(it->specular[0], it->specular[1], it->specular[2]), texDif, texNorm,
+		                                                texSpec));
 	}
 	/************** load all the vertices **************/
 	for (size_t i = 0; i < shapes.size(); i++)
