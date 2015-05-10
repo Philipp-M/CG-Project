@@ -15,7 +15,11 @@ Camera::Camera(GLfloat width, GLfloat height, GLfloat nearPlane, GLfloat farPlan
 
 glm::mat4 Camera::getTransformationMatrix() const
 {
-	return glm::perspective(fieldOfView, width / height, nearPlane, farPlane) * transMat;
+	return transMat;
+}
+glm::mat4 Camera::getPerspectiveMatrix() const
+{
+	return glm::perspective(fieldOfView, width / height, nearPlane, farPlane);
 }
 
 void Camera::scale(glm::vec3 delta)
@@ -32,6 +36,18 @@ void Camera::rotate(glm::vec3 delta)
 {
 	transMat *= glm::rotate(delta.x, glm::vec3(1, 0, 0)) * glm::rotate(delta.y, glm::vec3(0, 1, 0)) *
 	            glm::rotate(delta.z, glm::vec3(0, 0, 1));
+}
+
+void Camera::rotateAroundAxis(glm::vec3 a, float w)
+{
+	a = glm::normalize(a);
+	float cosA = cos(w);
+	float sinA = sin(w);
+	glm::mat4 rot((a.x * a.x * (1 - cosA) + cosA), (a.x * a.y * (1 - cosA) - a.z * sinA), (a.x * a.z * (1 - cosA) + a.y * sinA), 0,
+	              (a.x * a.y * (1 - cosA) + a.z * sinA), (a.y * a.y * (1 - cosA) + a.z * cosA), (a.y * a.z * (1 - cosA) - a.x * sinA), 0,
+	              (a.x * a.z * (1 - cosA) - a.y * sinA), (a.y * a.z * (1 - cosA) + a.x * sinA), (a.z * a.z * (1 - cosA) + cosA), 0,
+	              0, 0, 0, 1);
+	transMat *= rot;
 }
 
 void Camera::move(glm::vec3 delta)

@@ -11,5 +11,5 @@ out vec4 FragColor;
 
 void main()
 {
-	FragColor = 0.5*(vColor+texture(diffuse, vTexCoord));
+	FragColor = vColor*texture(diffuse, vTexCoord);
 }

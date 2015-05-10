@@ -84,8 +84,10 @@ set(SOURCE_FILES
                 ShaderProgram.hpp
                 ShaderProgramManager.hpp
                 GlutMainLoop.cpp
-                GlutMainLoop.hpp)
-add_executable(CG-Project ${SOURCE_FILES} ${SOIL} )
+                GlutMainLoop.hpp
+                CameraSystem.cpp
+                CameraSystem.hpp)
+add_executable(CG-Project ${SOURCE_FILES} ${SOIL})
 target_include_directories(CG-Project PUBLIC ${GLM_INCLUDE_DIR})
 target_link_libraries(CG-Project ${OPENGL_LIBRARIES} ${GLUT_LIBRARY} ${GLEW_LIBRARIES} )
 

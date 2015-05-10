@@ -2,13 +2,13 @@
 
 #include <string>
 #include <vector>
-#include "Camera.hpp"
 #include "Model.hpp"
+#include "CameraSystem.hpp"
 
 class Scene
 {
 private:
-	Camera camera;
+	CameraSystem* cameraSystem;
 	std::vector<Model *> models;
 	/**
 	 * temporary variable will hopefully in future be loaded within the scene loader or
@@ -47,7 +47,7 @@ public:
 	/**
 	 * returns a reference to the camera for external control
 	 */
-	Camera &getCamera();
+	CameraSystem &getCameraSystem();
 
 	/**
 	 * returns a reference to the camera for external control

@@ -65,6 +65,8 @@ public:
 
 	void rotate(glm::vec3 delta);
 
+	void rotateAroundAxis(glm::vec3 a, float w);
+
 	void scale(glm::vec3 delta);
 
 	void scale(GLfloat delta);
