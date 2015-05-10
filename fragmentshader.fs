@@ -11,5 +11,8 @@ out vec4 FragColor;
 
 void main()
 {
-	FragColor = vColor*texture(diffuse, vTexCoord);
+    vec4 texel = vColor*texture(diffuse, vTexCoord);
+    if(texel.a < 0.5)
+        discard;
+	FragColor = texel;
 }

@@ -110,7 +110,7 @@ inline int TextureManager::loadTexture(const std::string &filename)
 	glBindTexture(GL_TEXTURE_2D, tex->id);
 
 	tex->name = filename;
-	tex->pixels = SOIL_load_image(filename.c_str(), &width, &height, 0, SOIL_LOAD_RGB);
+	tex->pixels = SOIL_load_image(filename.c_str(), &width, &height, 0, SOIL_LOAD_RGBA);
 	tex->width = width;
 	tex->height = height;
 
@@ -121,7 +121,7 @@ inline int TextureManager::loadTexture(const std::string &filename)
 	}
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 1); // necessary?
 
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, tex->pixels);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, tex->pixels);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
