@@ -57,6 +57,25 @@ void CameraSystem::rotate(glm::vec3 delta)
 	rotation += delta;
 }
 
+void CameraSystem::rotateAroundAxis(glm::vec3 o, glm::vec3 a, float w)
+{
+	a = glm::normalize(a);
+	glm::vec3 oldPos = position;
+	position = glm::vec3(glm::translate(-o) * glm::rotate(w, a) * glm::translate(o) * glm::vec4(position, 1));
+
+	glm::vec3 oPn = glm::normalize(oldPos+o);
+	glm::vec3 pn = glm::normalize(position+o);
+
+	if (!((pn.z == 0 && pn.y == 0) || (oPn.z == 0 && oPn.y == 0) || (pn.x == 0 && pn.y == 0) ||
+	      (oPn.x == 0 && oPn.y == 0)))
+	{
+		float phi = atan2(oPn.y, oPn.x) - atan2(pn.y, pn.x);
+		float theta = acos(oPn.z) - acos(pn.z);
+		rotation += glm::vec3(theta, 0, phi);
+	}
+
+}
+
 Camera &CameraSystem::getCamera()
 {
 	return camera;

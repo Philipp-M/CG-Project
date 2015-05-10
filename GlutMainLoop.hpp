@@ -10,6 +10,12 @@ private:
 	bool pressedKeys[256];
 	int lastElapsedtime;
 	float movementSpeed;
+	float merrySpeed;
+	float merryRotation;
+	float maxMerryHeight;
+	float merryHeight1;
+	float merryHeight2;
+	bool automaticMode;
 
 	GlutMainLoop();
 

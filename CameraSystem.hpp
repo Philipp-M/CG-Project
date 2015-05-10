@@ -32,6 +32,8 @@ public:
 
 	void rotate(glm::vec3 delta);
 
+	void rotateAroundAxis(glm::vec3 o, glm::vec3 a, float w);
+
 	glm::mat4 getTransformationMatrix() const;
 
 	Camera &getCamera();
