@@ -14,6 +14,11 @@ public:
 	virtual void rotate(glm::vec3 delta) = 0;
 
 	/**
+	 * rotates the model around an axis 'a' by the angle 'w', the movement is dependent of previous transformations
+	 */
+	virtual void rotateAroundAxis(glm::vec3 a, float w) = 0;
+
+	/**
 	 * scales the model based on the given vector, the movement is dependent of previous transformations
 	 */
 	virtual void scale(glm::vec3 delta) = 0;

@@ -38,6 +38,18 @@ void Camera::rotate(glm::vec3 delta)
 	            glm::rotate(delta.z, glm::vec3(0, 0, 1));
 }
 
+void Camera::rotateAroundAxis(glm::vec3 a, float w)
+{
+	a = glm::normalize(a);
+	float cosA = cos(w);
+	float sinA = sin(w);
+	glm::mat4 rot((a.x * a.x * (1 - cosA) + cosA), (a.x * a.y * (1 - cosA) - a.z * sinA), (a.x * a.z * (1 - cosA) + a.y * sinA), 0,
+	              (a.x * a.y * (1 - cosA) + a.z * sinA), (a.y * a.y * (1 - cosA) + a.z * cosA), (a.y * a.z * (1 - cosA) - a.x * sinA), 0,
+	              (a.x * a.z * (1 - cosA) - a.y * sinA), (a.y * a.z * (1 - cosA) + a.x * sinA), (a.z * a.z * (1 - cosA) + cosA), 0,
+	              0, 0, 0, 1);
+	transMat *= rot;
+}
+
 void Camera::move(glm::vec3 delta)
 {
 	transMat *= glm::translate(delta);
