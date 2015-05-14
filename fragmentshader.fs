@@ -1,10 +1,12 @@
 #version 330
 #define MAX_LIGHTS 10
 
-uniform mat4 ModelMatrix;
-uniform mat3 NormalMatrix;
+uniform mat4 modelMatrix;
+uniform mat3 normalMatrix;
+uniform vec3 cameraPosition;
 
 uniform int numPointLights;
+
 uniform struct PointLight
 {
 	vec3 position;
@@ -15,6 +17,9 @@ uniform struct PointLight
 uniform sampler2D diffuse;
 uniform sampler2D specular;
 uniform sampler2D normal;
+
+uniform vec3 specColor;
+uniform float shininess;
 
 in vec4 vColor;
 in vec3 vNormal;
@@ -30,17 +35,32 @@ void main()
     if(texColor.a < 0.5)
         discard;
 
-    vec3 normal = normalize(NormalMatrix * vNormal);
+    vec3 normal = normalize(normalMatrix * vNormal);
+	vec3 pos = vec3(modelMatrix * vec4(vPosition, 1));
 
     for(int i = 0; i < numPointLights; ++i)
     {
-	    vec3 surfaceToLight = allPointLights[i].position - vPosition;
-		float distanceToLight = length(surfaceToLight);
+	    vec3 posToLight = allPointLights[i].position - pos;
+		float disToLight = length(posToLight);
+		posToLight = normalize(posToLight);
 
-	    float incidence = max(0.0, dot(normal, surfaceToLight) / distanceToLight);
-	    float attenuation = 1.0 / (1.0 + allPointLights[i].attenuation * distanceToLight * distanceToLight);
-	    FragColor += vec4(attenuation * incidence * allPointLights[i].colorIntensity, 1.0);
+		// diffuse lightning
+	    float cosNorm = max(0.0, dot(normal, posToLight));
+
+	    vec3 difLight = cosNorm * texColor.rgb * allPointLights[i].colorIntensity;
+
+	    // specular lightning
+	    vec3 specLight = vec3(0, 0, 0);
+	    if(cosNorm > 0.0)
+	    {
+	        vec3 posToCamera = normalize(cameraPosition - pos);
+			vec3 refVector = reflect(-posToLight, normal);
+	        float cosRefl = max(0.0, dot(posToCamera, refVector));
+			float specCof = pow(cosRefl, shininess);
+			specLight = specCof * specColor * allPointLights[i].colorIntensity;
+	    }
+
+	    float attenuation = 1.0 / (1.0 + allPointLights[i].attenuation * disToLight * disToLight);
+	    FragColor += vec4(attenuation * (difLight + specLight), 0.0);
 	}
-	FragColor *= texColor;
-	//FragColor += texColor*0.05;
 }

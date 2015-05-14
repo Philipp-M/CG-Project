@@ -27,8 +27,8 @@ void Model::refreshBuffers()
 
 void Model::draw(const ShaderProgram &shaderProgram)
 {
-	shaderProgram.setMatrixUniform4f("ModelMatrix", getTransformationMatrix());
-	shaderProgram.setMatrixUniform3f("NormalMatrix", glm::transpose(glm::inverse(glm::mat3(getTransformationMatrix()))));
+	shaderProgram.setMatrixUniform4f("modelMatrix", getTransformationMatrix());
+	shaderProgram.setMatrixUniform3f("normalMatrix", glm::transpose(glm::inverse(glm::mat3(getTransformationMatrix()))));
 	glEnableVertexAttribArray(shaderProgram.attributeLocation("position"));
 	glBindBuffer(GL_ARRAY_BUFFER, idVert);
 	shaderProgram.vertexAttribPointer("position", 3, GL_FLOAT, sizeof(Vertex3), 0, false);
@@ -39,6 +39,9 @@ void Model::draw(const ShaderProgram &shaderProgram)
 	glEnableVertexAttribArray(shaderProgram.attributeLocation("texCoord"));
 	shaderProgram.vertexAttribPointer("texCoord", 2, GL_FLOAT, sizeof(Vertex3), (void *) (3 * sizeof(glm::vec3)), false);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, idIndices);
+	// setup specular
+	shaderProgram.setUniform3f("specColor", material->specColor);
+	shaderProgram.setUniform1f("shininess", material->shininess);
 	// bind the texture(s)
 	// diffuse texture
 	glActiveTexture(GL_TEXTURE0);

@@ -34,6 +34,12 @@ void GlutMainLoop::onIdle()
 			cameraSystem.moveRight(deltaElapsedTime * movementSpeed);
 	}
 	const std::vector<Model *> &models = scene->getModels();
+	std::vector<PointLight>& pLights = scene->getPointLights();
+	for(int i = 0; i< pLights.size(); i++)
+	{
+		if(i == 3)
+			pLights[3].setPosition(glm::vec3(10*sin(0.0005*glutGet(GLUT_ELAPSED_TIME)), 10*cos(0.0007*glutGet(GLUT_ELAPSED_TIME)), -10));
+	}
 	float oldMerryHeight1 = merryHeight1;
 	float oldMerryHeight2 = merryHeight2;
 	float oldMerryRotation = merryRotation;
@@ -101,9 +107,12 @@ void GlutMainLoop::init()
 	// load the scene
 	scene = new Scene("./scene/merry.json");
 	scene->addPointLight(PointLight(glm::vec3(10, 10, -10), glm::vec3(1.0, 0.8, 0.6), 150));
+	scene->addPointLight(PointLight(glm::vec3(100, 100, -100), glm::vec3(1.0, 0.8, 0.6), 1500));
 	scene->addPointLight(PointLight(glm::vec3(-10, -10, -10), glm::vec3(0.0, 1.0, 0.0), 20));
-	scene->addPointLight(PointLight(glm::vec3(-10, 15, -10), glm::vec3(1.0, 0.0, 0.0), 70));
+	scene->addPointLight(PointLight(glm::vec3(-10, 15, -10), glm::vec3(1.0, 0.0, 0.0), 170));
 	scene->addPointLight(PointLight(glm::vec3(10, -10, -20), glm::vec3(0.0, 0.0, 1.0), 150));
+	scene->addPointLight(PointLight(glm::vec3(1.5, -1.5, -1), glm::vec3(0.0, 1.0, 1.0), 5,0.2));
+	scene->addPointLight(PointLight(glm::vec3(1.5, 1.5, -1), glm::vec3(1.0, 1.0, 1.0), 4,0.3));
 }
 
 GlutMainLoop::~GlutMainLoop()

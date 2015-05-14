@@ -47,11 +47,9 @@ public:
 	 */
 	const std::vector<Model *> &getModels();
 
-	const std::vector<PointLight> &getPointLights() const;
+	std::vector<PointLight> &getPointLights();
 
-	void setPointLights(const std::vector<PointLight> &pointLights);
-
-/**
+	/**
 	 * loads a scene based on a scene file written in JSON *WIP*
 	 */
 

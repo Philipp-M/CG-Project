@@ -385,7 +385,7 @@ bool Scene::loadFromFile(const std::string &filename)
 		else if (it->normal_texname != "")
 			texNorm = tm.getByID(tm.loadTexture(it->normal_texname));
 		MaterialManager::get().addMaterial(new Material(it->name, glm::vec3(it->diffuse[0], it->diffuse[1], it->diffuse[2]),
-		                                                glm::vec3(it->specular[0], it->specular[1], it->specular[2]), texDif, texNorm,
+		                                                glm::vec3(it->specular[0], it->specular[1], it->specular[2]), it->shininess, texDif, texNorm,
 		                                                texSpec));
 	}
 	/************** load all the vertices **************/
@@ -423,9 +423,10 @@ void Scene::addModel(Model *model)
 void Scene::draw()
 {
 	shaderProgram->bind();
-	shaderProgram->setMatrixUniform4f("ViewMatrix", cameraSystem->getTransformationMatrix());
+	shaderProgram->setMatrixUniform4f("viewMatrix", cameraSystem->getTransformationMatrix());
 	// init lights
 	shaderProgram->setUniform1i("numPointLights", pointLights.size());
+	shaderProgram->setUniform3f("cameraPosition", cameraSystem->getPosition());
 	for (int i = 0; i < pointLights.size(); i++)
 		pointLights[i].insertInShader(*shaderProgram, i);
 	// draw all models
@@ -457,14 +458,9 @@ const std::vector<Model *> &Scene::getModels()
 	return models;
 }
 
-const std::vector<PointLight> &Scene::getPointLights() const
+std::vector<PointLight> &Scene::getPointLights()
 {
 	return pointLights;
-}
-
-void Scene::setPointLights(const std::vector<PointLight> &pointLights)
-{
-	Scene::pointLights = pointLights;
 }
 
 void Scene::addPointLight(const PointLight &light)

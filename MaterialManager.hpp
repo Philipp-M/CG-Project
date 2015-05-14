@@ -8,15 +8,17 @@
 
 struct Material
 {
-	Material(const std::string &name, const glm::vec3 &color, const glm::vec3 &specColor, const Texture *cMap = NULL,
+	Material(const std::string &name, const glm::vec3 &color, const glm::vec3 &specColor, GLfloat shininess,
+	         const Texture *cMap = NULL,
 	         const Texture *nMap = NULL,
 	         const Texture *sMap = NULL) :
-			name(name), color(color), specColor(specColor), colorMap(cMap), normalMap(nMap), specularMap(sMap)
+			name(name), color(color), specColor(specColor), colorMap(cMap), normalMap(nMap), specularMap(sMap), shininess(shininess)
 	{ }
 
 	std::string name;
 	glm::vec3 color; // is not really used since the model saves the color vertice wise
 	glm::vec3 specColor;
+	GLfloat shininess;
 	//glm::vec3 emission; // difficult to handle in simple opengl...
 	const Texture *colorMap;
 	const Texture *normalMap;
@@ -28,7 +30,7 @@ class MaterialManager
 public:
 	static MaterialManager &get();
 
-	uint16_t addMaterial(Material* material);
+	uint16_t addMaterial(Material *material);
 
 	const Material *getByID(uint16_t id);
 
@@ -37,7 +39,7 @@ public:
 	void deleteAllMaterials();
 
 private:
-	std::vector<Material*> materials;
+	std::vector<Material *> materials;
 
 	MaterialManager()
 	{ }
@@ -55,7 +57,7 @@ inline void MaterialManager::deleteAllMaterials()
 
 inline const Material *MaterialManager::getByName(const std::string &name)
 {
-	for (std::vector<Material*>::iterator it = materials.begin(); it != materials.end(); ++it)
+	for (std::vector<Material *>::iterator it = materials.begin(); it != materials.end(); ++it)
 		if ((*it)->name == name)
 			return *it;
 }
@@ -65,7 +67,7 @@ inline const Material *MaterialManager::getByID(uint16_t id)
 	return materials.size() <= id ? NULL : materials[id];
 }
 
-inline uint16_t MaterialManager::addMaterial(Material* material)
+inline uint16_t MaterialManager::addMaterial(Material *material)
 {
 	materials.push_back(material);
 	return materials.size() - 1;
