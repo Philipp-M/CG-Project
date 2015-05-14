@@ -12,6 +12,7 @@ uniform struct PointLight
 	vec3 position;
 	vec3 colorIntensity;
 	float attenuation;
+	float ambient;
 } allPointLights[MAX_LIGHTS];
 
 uniform sampler2D diffuse;
@@ -43,11 +44,12 @@ void main()
 	    vec3 posToLight = allPointLights[i].position - pos;
 		float disToLight = length(posToLight);
 		posToLight = normalize(posToLight);
-
+		// ambient lightning
+		vec3 ambientLight = allPointLights[i].ambient * texColor.rgb;
 		// diffuse lightning
 	    float cosNorm = max(0.0, dot(normal, posToLight));
 
-	    vec3 difLight = cosNorm * texColor.rgb * allPointLights[i].colorIntensity;
+	    vec3 difLight = cosNorm * texColor.rgb;
 
 	    // specular lightning
 	    vec3 specLight = vec3(0, 0, 0);
@@ -57,10 +59,10 @@ void main()
 			vec3 refVector = reflect(-posToLight, normal);
 	        float cosRefl = max(0.0, dot(posToCamera, refVector));
 			float specCof = pow(cosRefl, shininess);
-			specLight = specCof * specColor * allPointLights[i].colorIntensity;
+			specLight = specCof * specColor ;
 	    }
 
 	    float attenuation = 1.0 / (1.0 + allPointLights[i].attenuation * disToLight * disToLight);
-	    FragColor += vec4(attenuation * (difLight + specLight), 0.0);
+	    FragColor += vec4(attenuation * allPointLights[i].colorIntensity * (ambientLight + difLight + specLight), 0.0);
 	}
 }

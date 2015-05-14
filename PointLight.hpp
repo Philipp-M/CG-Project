@@ -12,12 +12,13 @@ private:
 	glm::vec3 position;
 	glm::vec3 color;
 	GLfloat intensity;
+	GLfloat ambient;
 	GLfloat attenuation;
 
 public:
 
-	PointLight(const glm::vec3 &position = glm::vec3(0.0), const glm::vec3 &color = glm::vec3(1.0), GLfloat intensity = 1.0f, GLfloat attenuation = 1.0f) :
-			position(position), color(color), intensity(intensity), attenuation(attenuation)
+	PointLight(const glm::vec3 &position = glm::vec3(0.0), const glm::vec3 &color = glm::vec3(1.0), GLfloat intensity = 1.0f, GLfloat attenuation = 1.0f, GLfloat ambient = 0.1f) :
+			position(position), color(color), intensity(intensity), attenuation(attenuation), ambient(ambient)
 	{ }
 
 	const glm::vec3 &getPosition() const;
@@ -33,6 +34,10 @@ public:
 	GLfloat getIntensity() const;
 
 	void setIntensity(GLfloat intensity);
+
+	GLfloat getAmbient() const;
+
+	void setAmbient(GLfloat ambientFactor);
 
 	GLfloat getAttenuation() const;
 

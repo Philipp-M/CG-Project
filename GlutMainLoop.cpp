@@ -106,7 +106,7 @@ void GlutMainLoop::init()
 	glutSetCursor(GLUT_CURSOR_NONE);
 	// load the scene
 	scene = new Scene("./scene/merry.json");
-	scene->addPointLight(PointLight(glm::vec3(10, 10, -10), glm::vec3(1.0, 0.8, 0.6), 150));
+	scene->addPointLight(PointLight(glm::vec3(10, 10, -10), glm::vec3(1.0, 0.8, 0.6), 150, 1.0, 0.3));
 	scene->addPointLight(PointLight(glm::vec3(100, 100, -100), glm::vec3(1.0, 0.8, 0.6), 1500));
 	scene->addPointLight(PointLight(glm::vec3(-10, -10, -10), glm::vec3(0.0, 1.0, 0.0), 20));
 	scene->addPointLight(PointLight(glm::vec3(-10, 15, -10), glm::vec3(1.0, 0.0, 0.0), 170));

@@ -385,7 +385,7 @@ bool Scene::loadFromFile(const std::string &filename)
 		else if (it->normal_texname != "")
 			texNorm = tm.getByID(tm.loadTexture(it->normal_texname));
 		MaterialManager::get().addMaterial(new Material(it->name, glm::vec3(it->diffuse[0], it->diffuse[1], it->diffuse[2]),
-		                                                glm::vec3(it->specular[0], it->specular[1], it->specular[2]), it->shininess, texDif, texNorm,
+		                                                glm::vec3(it->specular[0], it->specular[1], it->specular[2]), it->shininess+0.01, texDif, texNorm,
 		                                                texSpec));
 	}
 	/************** load all the vertices **************/

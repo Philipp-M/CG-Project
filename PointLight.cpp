@@ -1,8 +1,10 @@
 #include <sstream>
 #include <iostream>
 #include "PointLight.hpp"
-#define SSTR( x ) dynamic_cast< std::ostringstream & >( \
+
+#define SSTR(x) dynamic_cast< std::ostringstream & >( \
         ( std::ostringstream() << std::dec << x ) ).str()
+
 const glm::vec3 &PointLight::getPosition() const
 {
 	return position;
@@ -38,6 +40,16 @@ void PointLight::setIntensity(GLfloat intensity)
 	PointLight::intensity = intensity;
 }
 
+GLfloat PointLight::getAmbient() const
+{
+	return ambient;
+}
+
+void PointLight::setAmbient(GLfloat ambient)
+{
+	PointLight::ambient = ambient;
+}
+
 GLfloat PointLight::getAttenuation() const
 {
 	return attenuation;
@@ -51,7 +63,8 @@ void PointLight::setAttenuation(GLfloat attenuation)
 void PointLight::insertInShader(const ShaderProgram &shaderProgram, GLuint num)
 {
 	shaderProgram.setUniform3f("allPointLights[" + SSTR(num) + "].position", position);
-	shaderProgram.setUniform3f("allPointLights[" + SSTR(num) + "].colorIntensity", intensity*color);
+	shaderProgram.setUniform3f("allPointLights[" + SSTR(num) + "].colorIntensity", intensity * color);
 	shaderProgram.setUniform1f("allPointLights[" + SSTR(num) + "].attenuation", attenuation);
+	shaderProgram.setUniform1f("allPointLights[" + SSTR(num) + "].ambient", ambient);
 }
 
