@@ -100,7 +100,7 @@ void ShaderProgram::unbind() const
 
 void ShaderProgram::setUniform1i(const std::string &name, GLint v) const
 {
-	glUniform1f(uniformLocation(name), v);
+	glUniform1i(uniformLocation(name), v);
 }
 
 void ShaderProgram::setUniform1f(const std::string &name, GLfloat v) const
@@ -143,3 +143,7 @@ void ShaderProgram::setMatrixUniform4f(const std::string &name, glm::mat4 m) con
 	glUniformMatrix4fv(uniformLocation(name), 1, GL_FALSE, glm::value_ptr(m));
 }
 
+void ShaderProgram::setMatrixUniform3f(const std::string &name, glm::mat3 m) const
+{
+	glUniformMatrix3fv(uniformLocation(name), 1, GL_FALSE, glm::value_ptr(m));
+}

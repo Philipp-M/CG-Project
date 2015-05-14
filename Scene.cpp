@@ -39,7 +39,7 @@ private:
 
 	void createSortedIndices()
 	{
-		adjVert.resize(mesh.positions.size()/3);
+		adjVert.resize(mesh.positions.size() / 3);
 		for (size_t f = 0; f < indices.size() / 3; f++)
 		{
 			adjVert[indices[f * 3]].push_back(f);
@@ -81,7 +81,7 @@ public:
 	void computeVertices(std::vector<Model::Vertex3> &vertices)
 	{
 		vertices.resize(mesh.positions.size());
-		#pragma omp parallel for schedule(dynamic, 1) // OpenMP
+#pragma omp parallel for schedule(dynamic, 1) // OpenMP
 		for (GLuint i = 0; i < mesh.positions.size() / 3; i++)
 		{
 			vertices[i] = Model::Vertex3(glm::vec3(mesh.positions[i * 3], mesh.positions[i * 3 + 1], mesh.positions[i * 3 + 2]),
@@ -92,7 +92,7 @@ public:
 		}
 		calculateFaceNormals(vertices);
 		createSortedIndices();
-		#pragma omp parallel for schedule(dynamic, 1) // OpenMP
+#pragma omp parallel for schedule(dynamic, 1) // OpenMP
 		for (GLuint i = 0; i < mesh.positions.size() / 3; i++)
 			calculateNormalColor(vertices[i], i);
 	}
@@ -424,10 +424,15 @@ void Scene::draw()
 {
 	shaderProgram->bind();
 	shaderProgram->setMatrixUniform4f("ViewMatrix", cameraSystem->getTransformationMatrix());
+	// init lights
+	shaderProgram->setUniform1i("numPointLights", pointLights.size());
+	for (int i = 0; i < pointLights.size(); i++)
+		pointLights[i].insertInShader(*shaderProgram, i);
+	// draw all models
 	for (std::vector<Model *>::iterator it = models.begin(); it != models.end(); ++it)
 	{
 		if ((*it) != NULL)
-			(*it)->draw(shaderProgram);
+			(*it)->draw(*shaderProgram);
 	}
 	shaderProgram->unbind();
 }
@@ -452,3 +457,18 @@ const std::vector<Model *> &Scene::getModels()
 	return models;
 }
 
+const std::vector<PointLight> &Scene::getPointLights() const
+{
+	return pointLights;
+}
+
+void Scene::setPointLights(const std::vector<PointLight> &pointLights)
+{
+	Scene::pointLights = pointLights;
+}
+
+void Scene::addPointLight(const PointLight &light)
+{
+	if (pointLights.size() <= MAX_LIGHTS)
+		pointLights.push_back(light);
+}

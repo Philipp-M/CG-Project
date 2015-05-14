@@ -48,6 +48,8 @@ public:
 
 	void setMatrixUniform4f(const std::string &name, glm::mat4 m) const;
 
+	void setMatrixUniform3f(const std::string &name, glm::mat3 m) const;
+
 	void bind() const;
 
 	void unbind() const;

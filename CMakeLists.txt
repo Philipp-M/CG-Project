@@ -86,7 +86,9 @@ set(SOURCE_FILES
                 GlutMainLoop.cpp
                 GlutMainLoop.hpp
                 CameraSystem.cpp
-                CameraSystem.hpp)
+                CameraSystem.hpp
+                PointLight.cpp
+                PointLight.hpp)
 add_executable(CG-Project ${SOURCE_FILES} ${SOIL})
 target_include_directories(CG-Project PUBLIC ${GLM_INCLUDE_DIR})
 target_link_libraries(CG-Project ${OPENGL_LIBRARIES} ${GLUT_LIBRARY} ${GLEW_LIBRARIES} )

@@ -4,12 +4,16 @@
 #include <vector>
 #include "Model.hpp"
 #include "CameraSystem.hpp"
+#include "PointLight.hpp"
+
+const GLuint MAX_LIGHTS = 10;
 
 class Scene
 {
 private:
-	CameraSystem* cameraSystem;
+	CameraSystem *cameraSystem;
 	std::vector<Model *> models;
+	std::vector<PointLight> pointLights;
 	/**
 	 * temporary variable will hopefully in future be loaded within the scene loader or
 	 * with functions that recognize which material is inside the obj file
@@ -34,11 +38,20 @@ public:
 	void addModel(Model *model);
 
 	/**
+	 * adds a model to the scene
+	 */
+	void addPointLight(const PointLight &light);
+
+	/**
 	 * returns a reference to the array where all models are held in
 	 */
 	const std::vector<Model *> &getModels();
 
-	/**
+	const std::vector<PointLight> &getPointLights() const;
+
+	void setPointLights(const std::vector<PointLight> &pointLights);
+
+/**
 	 * loads a scene based on a scene file written in JSON *WIP*
 	 */
 

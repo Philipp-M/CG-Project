@@ -52,7 +52,7 @@ public:
 	 * the shaderProgram has to have the uniform variables:
 	 * mat4 ModelMatrix, atrVec3 Position, atrVec3 Color
 	 */
-	void draw(const ShaderProgram *shaderProgram);
+	void draw(const ShaderProgram& shaderProgram);
 
 	/**
 	 * returns the name of the model

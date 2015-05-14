@@ -45,7 +45,7 @@ void GlutMainLoop::onIdle()
 		    name == "horse7" || name == "horse8" || name == "Top" || name == "Bottom" || name == "Pole" || name == "HandPoles")
 		{
 			merryRotation = merrySpeed * deltaElapsedTime;
-			models[i]->rotate(glm::vec3(0.000, 0.000, merryRotation ));
+			models[i]->rotate(glm::vec3(0.000, 0.000, merryRotation));
 		}
 		if (models[i]->getName() == "horse1" || models[i]->getName() == "horse3" || models[i]->getName() == "horse5" ||
 		    models[i]->getName() == "horse7")
@@ -63,9 +63,9 @@ void GlutMainLoop::onIdle()
 	}
 	if (automaticMode)
 	{
-		const glm::vec3& p = scene->getCameraSystem().getPosition();
-		scene->getCameraSystem().setPosition(glm::vec3(p.x,p.y,1.62-merryHeight1));
-		cameraSystem.rotateAroundAxis(glm::vec3(0,0,0),glm::vec3(0,0,1),merryRotation);
+		const glm::vec3 &p = scene->getCameraSystem().getPosition();
+		scene->getCameraSystem().setPosition(glm::vec3(p.x, p.y, 1.62 - merryHeight1));
+		cameraSystem.rotateAroundAxis(glm::vec3(0, 0, 0), glm::vec3(0, 0, 1), merryRotation);
 	}
 	lastElapsedtime = glutGet(GLUT_ELAPSED_TIME);
 	glutPostRedisplay();
@@ -100,6 +100,10 @@ void GlutMainLoop::init()
 	glutSetCursor(GLUT_CURSOR_NONE);
 	// load the scene
 	scene = new Scene("./scene/merry.json");
+	scene->addPointLight(PointLight(glm::vec3(10, 10, -10), glm::vec3(1.0, 0.8, 0.6), 150));
+	scene->addPointLight(PointLight(glm::vec3(-10, -10, -10), glm::vec3(0.0, 1.0, 0.0), 20));
+	scene->addPointLight(PointLight(glm::vec3(-10, 15, -10), glm::vec3(1.0, 0.0, 0.0), 70));
+	scene->addPointLight(PointLight(glm::vec3(10, -10, -20), glm::vec3(0.0, 0.0, 1.0), 150));
 }
 
 GlutMainLoop::~GlutMainLoop()
@@ -143,11 +147,11 @@ void GlutMainLoop::keyboardFunc(uint8_t k, int x, int y)
 			automaticMode = !automaticMode;
 	        for (int i = 0; i < models.size(); i++)
 		        models[i]->resetTransformationMatrix();
-			merryRotation = 0;
-			merryHeight1 = 0;
-			merryHeight2 = 0;
-			scene->getCameraSystem().setPosition(glm::vec3(0,3.514,1.623));
-	        scene->getCameraSystem().setRotation(glm::vec3(M_PI/2,0,M_PI/2));
+	        merryRotation = 0;
+	        merryHeight1 = 0;
+	        merryHeight2 = 0;
+	        scene->getCameraSystem().setPosition(glm::vec3(0, 3.514, 1.623));
+	        scene->getCameraSystem().setRotation(glm::vec3(M_PI / 2, 0, M_PI / 2));
 	        break;
 
 		default:
