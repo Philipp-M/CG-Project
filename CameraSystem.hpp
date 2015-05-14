@@ -34,7 +34,9 @@ public:
 
 	void rotateAroundAxis(glm::vec3 o, glm::vec3 a, float w);
 
-	glm::mat4 getTransformationMatrix() const;
+	glm::mat4 getViewMatrix() const;
+
+	glm::mat4 getProjectionMatrix() const;
 
 	Camera &getCamera();
 

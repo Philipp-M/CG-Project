@@ -10,6 +10,8 @@ Ni 1.000000
 d 1.000000
 illum 2
 map_Kd textures/floor_diffuse.jpg
+map_Ks textures/floor_specular.jpg
+map_Ns textures/floor_normal.jpg
 
 newmtl h_blue
 Ns 86.274510
@@ -20,6 +22,7 @@ Ni 1.000000
 d 1.000000
 illum 2
 map_Kd textures/horse_color.jpg
+map_Ns textures/horse_normal.jpg
 
 newmtl h_brown
 Ns 86.274510
@@ -30,6 +33,7 @@ Ni 1.000000
 d 1.000000
 illum 2
 map_Kd textures/horse_color.jpg
+map_Ns textures/horse_normal.jpg
 
 newmtl h_cyan
 Ns 86.274510
@@ -40,6 +44,7 @@ Ni 1.000000
 d 1.000000
 illum 2
 map_Kd textures/horse_color.jpg
+map_Ns textures/horse_normal.jpg
 
 newmtl h_green
 Ns 86.274510
@@ -50,16 +55,18 @@ Ni 1.000000
 d 1.000000
 illum 2
 map_Kd textures/horse_color.jpg
+map_Ns textures/horse_normal.jpg
 
 newmtl h_pink
 Ns 86.274510
 Ka 0.000000 0.000000 0.000000
-Kd 0.800000 0.000000 0.800000
+Kd 0.003175 0.000000 0.800000
 Ks 0.500000 0.500000 0.500000
 Ni 1.000000
 d 1.000000
 illum 2
 map_Kd textures/horse_color.jpg
+map_Ns textures/horse_normal.jpg
 
 newmtl h_pink_color1.jpg.004
 Ns 86.274510
@@ -70,6 +77,7 @@ Ni 1.000000
 d 1.000000
 illum 2
 map_Kd textures/horse_color.jpg
+map_Ns textures/horse_normal.jpg
 
 newmtl h_purp
 Ns 86.274510
@@ -80,6 +88,7 @@ Ni 1.000000
 d 1.000000
 illum 2
 map_Kd textures/horse_color.jpg
+map_Ns textures/horse_normal.jpg
 
 newmtl h_red
 Ns 86.274510
@@ -90,6 +99,7 @@ Ni 1.000000
 d 1.000000
 illum 2
 map_Kd textures/horse_color.jpg
+map_Ns textures/horse_normal.jpg
 
 newmtl h_yellow
 Ns 86.274510
@@ -100,6 +110,7 @@ Ni 1.000000
 d 1.000000
 illum 2
 map_Kd textures/horse_color.jpg
+map_Ns textures/horse_normal.jpg
 
 newmtl pole
 Ns 86.274510
@@ -119,3 +130,5 @@ Ni 1.000000
 d 1.000000
 illum 2
 map_Kd textures/wall_diffuse.jpg
+map_Ks textures/wall_specular.jpg
+map_Ns textures/wall_normal.jpg

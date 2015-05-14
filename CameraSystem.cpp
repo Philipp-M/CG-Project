@@ -10,7 +10,7 @@ CameraSystem::CameraSystem(const glm::vec3 &baseRotation, const glm::vec3 &baseP
 
 void CameraSystem::refreshCamera()
 {
-	camera.resetTransformationMatrix();
+	camera.resetViewMatrix();
 	camera.rotate(baseRotation);
 	camera.move(basePosition);
 }
@@ -45,13 +45,17 @@ void CameraSystem::moveAlong(glm::vec3 vec, float distance)
 	position = glm::vec3(rot2 * glm::translate(vec * distance) * rot1 * glm::vec4(position, 1));
 }
 
-glm::mat4 CameraSystem::getTransformationMatrix() const
+glm::mat4 CameraSystem::getViewMatrix() const
 {
 	glm::mat4 rot = glm::rotate(rotation.x, glm::vec3(1, 0, 0)) * glm::rotate(rotation.y, glm::vec3(0, 1, 0)) *
 	                glm::rotate(rotation.z, glm::vec3(0, 0, 1));
-	return camera.getPerspectiveMatrix() * camera.getTransformationMatrix() * rot * glm::translate(position);
+	return camera.getViewMatrix() * rot * glm::translate(position);
 }
 
+glm::mat4 CameraSystem::getProjectionMatrix() const
+{
+	return camera.getProjectionMatrix();
+}
 void CameraSystem::rotate(glm::vec3 delta)
 {
 	rotation += delta;

@@ -26,49 +26,36 @@ private:
 		return glm::normalize(glm::cross(v3 - v2, v1 - v2));
 	}
 
-	void calculateFaceNormals(const std::vector<Model::Vertex3> &vertices)
+	glm::vec3 calculateTangent(const Model::Vertex3 &v0, const Model::Vertex3 &v1, const Model::Vertex3 &v2)
 	{
-		faceNormals.reserve(indices.size() / 3);
-		for (GLuint f = 0; f < indices.size() / 3; f++)
-		{
-			faceNormals.push_back(calculateFaceNormal(vertices[indices[f * 3]].vertex, vertices[indices[f * 3 + 1]].vertex,
-			                                          vertices[indices[f * 3 + 2]].vertex));
-
-		}
+		glm::vec2 deltaUV1 = v1.tex - v0.tex;
+		glm::vec2 deltaUV2 = v2.tex - v0.tex;
+		float f = 1.0f / (deltaUV1.s * deltaUV2.t - deltaUV2.s * deltaUV1.t);
+		return (f * (deltaUV2.t * (v1.vertex - v0.vertex) - deltaUV1.t * (v2.vertex - v0.vertex)));
 	}
 
-	void createSortedIndices()
+	void calculateNormalsTangents(std::vector<Model::Vertex3> &vertices)
 	{
-		adjVert.resize(mesh.positions.size() / 3);
-		for (size_t f = 0; f < indices.size() / 3; f++)
+		for (size_t f = 0; f < indices.size(); f += 3)
 		{
-			adjVert[indices[f * 3]].push_back(f);
-			adjVert[indices[f * 3 + 1]].push_back(f);
-			adjVert[indices[f * 3 + 2]].push_back(f);
+			Model::Vertex3 &v0 = vertices[indices[f]];
+			Model::Vertex3 &v1 = vertices[indices[f + 1]];
+			Model::Vertex3 &v2 = vertices[indices[f + 2]];
+			// calculate normals
+			glm::vec3 fn = calculateFaceNormal(v0.vertex, v1.vertex, v2.vertex);
+			v0.normal += fn;
+			v1.normal += fn;
+			v2.normal += fn;
+			glm::vec3 t = calculateTangent(v0, v1, v2);
+			v0.tangent += t;
+			v1.tangent += t;
+			v2.tangent += t;
 		}
-	}
-
-	void calculateNormalColor(Model::Vertex3 &vertex, GLuint id)
-	{
-		glm::vec3 vn(0);
-		glm::vec3 vc(0);
-		for (int i = 0; i < adjVert[id].size(); i++)
+		for (size_t i; i < vertices.size(); i++)
 		{
-			GLuint f = adjVert[id][i];
-			vn += faceNormals[f];
-			if (materials.size() > 0 && mesh.material_ids.size() > 0)
-			{
-				vc.r += materials[mesh.material_ids[f]].diffuse[0];
-				vc.g += materials[mesh.material_ids[f]].diffuse[1];
-				vc.b += materials[mesh.material_ids[f]].diffuse[2];
-			}
-			// maybe add specular color for future...
+			vertices[i].normal = glm::normalize(vertices[i].normal);
+			vertices[i].tangent = glm::normalize(vertices[i].tangent);
 		}
-		// should not be zero, just for safety
-		if (adjVert[id].size() != 0)
-			vc /= adjVert[id].size();
-		vertex.color = vc;
-		vertex.normal = glm::normalize(vn);
 	}
 
 public:
@@ -81,7 +68,6 @@ public:
 	void computeVertices(std::vector<Model::Vertex3> &vertices)
 	{
 		vertices.resize(mesh.positions.size());
-#pragma omp parallel for schedule(dynamic, 1) // OpenMP
 		for (GLuint i = 0; i < mesh.positions.size() / 3; i++)
 		{
 			vertices[i] = Model::Vertex3(glm::vec3(mesh.positions[i * 3], mesh.positions[i * 3 + 1], mesh.positions[i * 3 + 2]),
@@ -90,11 +76,7 @@ public:
 			if (mesh.texcoords.size() >= i * 2 + 1)
 				vertices[i].tex = glm::vec2(mesh.texcoords[i * 2], 1.0 - mesh.texcoords[i * 2 + 1]);
 		}
-		calculateFaceNormals(vertices);
-		createSortedIndices();
-#pragma omp parallel for schedule(dynamic, 1) // OpenMP
-		for (GLuint i = 0; i < mesh.positions.size() / 3; i++)
-			calculateNormalColor(vertices[i], i);
+		calculateNormalsTangents(vertices);
 	}
 };
 
@@ -385,7 +367,8 @@ bool Scene::loadFromFile(const std::string &filename)
 		else if (it->normal_texname != "")
 			texNorm = tm.getByID(tm.loadTexture(it->normal_texname));
 		MaterialManager::get().addMaterial(new Material(it->name, glm::vec3(it->diffuse[0], it->diffuse[1], it->diffuse[2]),
-		                                                glm::vec3(it->specular[0], it->specular[1], it->specular[2]), it->shininess+0.01, texDif, texNorm,
+		                                                glm::vec3(it->specular[0], it->specular[1], it->specular[2]), it->shininess + 0.01,
+		                                                texDif, texNorm,
 		                                                texSpec));
 	}
 	/************** load all the vertices **************/
@@ -423,7 +406,8 @@ void Scene::addModel(Model *model)
 void Scene::draw()
 {
 	shaderProgram->bind();
-	shaderProgram->setMatrixUniform4f("viewMatrix", cameraSystem->getTransformationMatrix());
+	//shaderProgram->setMatrixUniform4f("viewMatrix", cameraSystem->getViewMatrix());
+	//shaderProgram->setMatrixUniform4f("projectionMatrix", cameraSystem->getProjectionMatrix());
 	// init lights
 	shaderProgram->setUniform1i("numPointLights", pointLights.size());
 	shaderProgram->setUniform3f("cameraPosition", cameraSystem->getPosition());
@@ -433,7 +417,12 @@ void Scene::draw()
 	for (std::vector<Model *>::iterator it = models.begin(); it != models.end(); ++it)
 	{
 		if ((*it) != NULL)
+		{
+			//shaderProgram->setMatrixUniform4f("modelViewMatrix", cameraSystem->getViewMatrix() * (*it)->getTransformationMatrix());
+			shaderProgram->setMatrixUniform4f("MVPMatrix", cameraSystem->getProjectionMatrix() * cameraSystem->getViewMatrix() *
+			                                               (*it)->getTransformationMatrix());
 			(*it)->draw(*shaderProgram);
+		}
 	}
 	shaderProgram->unbind();
 }

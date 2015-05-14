@@ -5,11 +5,11 @@ set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
 #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")-DNULL=nullptr
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DNULL=nullptr")
 
-find_package(OpenMP)
-if (OPENMP_FOUND)
-    set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
-    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
-endif()
+# find_package(OpenMP)
+# if (OPENMP_FOUND)
+#     set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
+#     set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
+# endif()
 #########################################################
 # FIND GLUT
 #########################################################
@@ -77,7 +77,6 @@ set(SOURCE_FILES
                 Camera.hpp
                 Model.cpp
                 Model.hpp
-                Entity.hpp
                 Shader.cpp
                 Shader.hpp
                 ShaderProgram.cpp
@@ -92,5 +91,4 @@ set(SOURCE_FILES
 add_executable(CG-Project ${SOURCE_FILES} ${SOIL})
 target_include_directories(CG-Project PUBLIC ${GLM_INCLUDE_DIR})
 target_link_libraries(CG-Project ${OPENGL_LIBRARIES} ${GLUT_LIBRARY} ${GLEW_LIBRARIES} )
-
 

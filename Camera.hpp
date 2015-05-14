@@ -3,11 +3,10 @@
 #include <GL/gl.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/constants.hpp>
-#include "Entity.hpp"
 
 const GLfloat PI_4 = 0.78539816339744830962;
 
-class Camera : public Entity
+class Camera
 {
 private:
 	GLfloat fieldOfView;
@@ -15,7 +14,7 @@ private:
 	GLfloat height;
 	GLfloat nearPlane;
 	GLfloat farPlane;
-	glm::mat4 transMat;
+	glm::mat4 viewMat;
 
 public:
 	Camera(GLfloat width = 1920, GLfloat height = 1080, GLfloat nearPlane = 1, GLfloat farPlane = 50, GLfloat fieldOfView = PI_4);
@@ -40,9 +39,9 @@ public:
 
 	void scale(GLfloat factor);
 
-	void resetTransformationMatrix();
+	void resetViewMatrix();
 
-	glm::mat4 getTransformationMatrix() const;
+	glm::mat4 getViewMatrix() const;
 
-	glm::mat4 getPerspectiveMatrix() const;
+	glm::mat4 getProjectionMatrix() const;
 };

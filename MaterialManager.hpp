@@ -8,15 +8,15 @@
 
 struct Material
 {
-	Material(const std::string &name, const glm::vec3 &color, const glm::vec3 &specColor, GLfloat shininess,
+	Material(const std::string &name, const glm::vec3 &difColor, const glm::vec3 &specColor, GLfloat shininess,
 	         const Texture *cMap = NULL,
 	         const Texture *nMap = NULL,
 	         const Texture *sMap = NULL) :
-			name(name), color(color), specColor(specColor), colorMap(cMap), normalMap(nMap), specularMap(sMap), shininess(shininess)
+			name(name), difColor(difColor), specColor(specColor), colorMap(cMap), normalMap(nMap), specularMap(sMap), shininess(shininess)
 	{ }
 
 	std::string name;
-	glm::vec3 color; // is not really used since the model saves the color vertice wise
+	glm::vec3 difColor;
 	glm::vec3 specColor;
 	GLfloat shininess;
 	//glm::vec3 emission; // difficult to handle in simple opengl...

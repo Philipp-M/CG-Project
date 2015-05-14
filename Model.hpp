@@ -3,11 +3,10 @@
 #include <glm/glm.hpp>
 #include <GL/gl.h>
 #include <vector>
-#include "Entity.hpp"
 #include "ShaderProgram.hpp"
 #include "MaterialManager.hpp"
 
-class Model : public Entity
+class Model
 {
 public:
 	/**
@@ -15,15 +14,15 @@ public:
 	 */
 	struct Vertex3
 	{
-		Vertex3(glm::vec3 v = glm::vec3(), glm::vec3 n = glm::vec3(), glm::vec3 c = glm::vec3(), glm::vec2 t = glm::vec2()) : vertex(v),
+		Vertex3(glm::vec3 v = glm::vec3(), glm::vec3 n = glm::vec3(), glm::vec3 t = glm::vec3(), glm::vec2 tex = glm::vec2()) : vertex(v),
 		                                                                                                                      normal(n),
-		                                                                                                                      color(c),
-		                                                                                                                      tex(t)
+		                                                                                                                      tangent(t),
+		                                                                                                                      tex(tex)
 		{ }
 
 		glm::vec3 vertex;
 		glm::vec3 normal;
-		glm::vec3 color;
+		glm::vec3 tangent;
 		glm::vec2 tex;
 	};
 

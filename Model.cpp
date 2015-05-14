@@ -34,34 +34,47 @@ void Model::draw(const ShaderProgram &shaderProgram)
 	shaderProgram.vertexAttribPointer("position", 3, GL_FLOAT, sizeof(Vertex3), 0, false);
 	glEnableVertexAttribArray(shaderProgram.attributeLocation("normal"));
 	shaderProgram.vertexAttribPointer("normal", 3, GL_FLOAT, sizeof(Vertex3), (void *) (sizeof(glm::vec3)), false);
-	glEnableVertexAttribArray(shaderProgram.attributeLocation("color"));
-	shaderProgram.vertexAttribPointer("color", 3, GL_FLOAT, sizeof(Vertex3), (void *) (2 * sizeof(glm::vec3)), false);
+	glEnableVertexAttribArray(shaderProgram.attributeLocation("tangent"));
+	shaderProgram.vertexAttribPointer("tangent", 3, GL_FLOAT, sizeof(Vertex3), (void *) (2 * sizeof(glm::vec3)), false);
 	glEnableVertexAttribArray(shaderProgram.attributeLocation("texCoord"));
 	shaderProgram.vertexAttribPointer("texCoord", 2, GL_FLOAT, sizeof(Vertex3), (void *) (3 * sizeof(glm::vec3)), false);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, idIndices);
 	// setup specular
-	shaderProgram.setUniform3f("specColor", material->specColor);
-	shaderProgram.setUniform1f("shininess", material->shininess);
-	// bind the texture(s)
-	// diffuse texture
-	glActiveTexture(GL_TEXTURE0);
-	if (material != NULL && material->colorMap != NULL)
-		glBindTexture(GL_TEXTURE_2D, material->colorMap->id);
-	else
-		glBindTexture(GL_TEXTURE_2D, TextureManager::get().getByID(0)->id);
-	shaderProgram.setUniform1i("diffuse", 0);
-	// specular texture
-	glActiveTexture(GL_TEXTURE1);
-	if (material != NULL && material->specularMap != NULL)
-		glBindTexture(GL_TEXTURE_2D, material->specularMap->id);
-	else
-		glBindTexture(GL_TEXTURE_2D, TextureManager::get().getByID(1)->id);
-	// normal texture
-	glActiveTexture(GL_TEXTURE2);
-	if (material != NULL && material->normalMap != NULL)
-		glBindTexture(GL_TEXTURE_2D, material->normalMap->id);
-	else
-		glBindTexture(GL_TEXTURE_2D, TextureManager::get().getByID(2)->id);
+	if (material != NULL)
+	{
+		shaderProgram.setUniform3f("specColor", material->specColor);
+		shaderProgram.setUniform3f("difColor", material->difColor);
+		shaderProgram.setUniform1f("shininess", material->shininess);
+		// bind the texture(s)
+		// diffuse texture
+		glActiveTexture(GL_TEXTURE0);
+		if (material->colorMap != NULL)
+			glBindTexture(GL_TEXTURE_2D, material->colorMap->id);
+		else
+			glBindTexture(GL_TEXTURE_2D, TextureManager::get().getByID(0)->id);
+		shaderProgram.setUniform1i("diffuseTex", 0);
+		// specular texture
+		if (material->specularMap != NULL)
+		{
+			shaderProgram.setUniform1i("useSpecularMapping", 1);
+			glActiveTexture(GL_TEXTURE1);
+			glBindTexture(GL_TEXTURE_2D, material->specularMap->id);
+			shaderProgram.setUniform1i("specularTex", 1);
+		}
+		else
+			shaderProgram.setUniform1i("useSpecularMapping", 0);
+		// normal texture
+		if (material->normalMap != NULL)
+		{
+			shaderProgram.setUniform1i("useNormalMapping", 1);
+			glActiveTexture(GL_TEXTURE2);
+			glBindTexture(GL_TEXTURE_2D, material->normalMap->id);
+			shaderProgram.setUniform1i("normalTex", 2);
+		}
+		else
+			shaderProgram.setUniform1i("useNormalMapping", 0);
+	}
+
 	GLint size;
 	glGetBufferParameteriv(GL_ELEMENT_ARRAY_BUFFER, GL_BUFFER_SIZE, &size);
 	glDrawElements(GL_TRIANGLES, (GLsizei) (size / sizeof(GLuint)), GL_UNSIGNED_INT, 0);

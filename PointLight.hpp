@@ -3,7 +3,6 @@
 
 #include <glm/glm.hpp>
 #include <GL/gl.h>
-#include "Entity.hpp"
 #include "ShaderProgram.hpp"
 
 class PointLight
