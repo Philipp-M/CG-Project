@@ -2,7 +2,7 @@
 #include <GL/freeglut.h>
 #include "GlutMainLoop.hpp"
 
-GlutMainLoop::GlutMainLoop() : movementSpeed(0.005), merrySpeed(-0.0005), maxMerryHeight(0.3), merryHeight1(0), automaticMode(false)
+GlutMainLoop::GlutMainLoop() : movementSpeed(0.005), merrySpeed(-0.0005), maxMerryHeight(0.3), merryHeight1(0), automaticMode(true)
 {
 	for (int i = 0; i < 256; i++)
 		pressedKeys[i] = false;
@@ -34,11 +34,12 @@ void GlutMainLoop::onIdle()
 			cameraSystem.moveRight(deltaElapsedTime * movementSpeed);
 	}
 	const std::vector<Model *> &models = scene->getModels();
-	std::vector<PointLight>& pLights = scene->getPointLights();
-	for(int i = 0; i< pLights.size(); i++)
+	std::vector<PointLight> &pLights = scene->getPointLights();
+	for (int i = 0; i < pLights.size(); i++)
 	{
-		if(i == 3)
-			pLights[3].setPosition(glm::vec3(10*sin(0.0005*glutGet(GLUT_ELAPSED_TIME)), 10*cos(0.0007*glutGet(GLUT_ELAPSED_TIME)), -10));
+		if (i == 3)
+			pLights[3].setPosition(
+					glm::vec3(10 * sin(0.0005 * glutGet(GLUT_ELAPSED_TIME)), 10 * cos(0.0007 * glutGet(GLUT_ELAPSED_TIME)), -10));
 	}
 	float oldMerryHeight1 = merryHeight1;
 	float oldMerryHeight2 = merryHeight2;
@@ -106,13 +107,17 @@ void GlutMainLoop::init()
 	glutSetCursor(GLUT_CURSOR_NONE);
 	// load the scene
 	scene = new Scene("./scene/merry.json");
+	// set the position to the green horse
+	scene->getCameraSystem().setPosition(glm::vec3(0, 3.514, 1.623));
+	scene->getCameraSystem().setRotation(glm::vec3(M_PI / 2, 0, M_PI / 2));
+
 	scene->addPointLight(PointLight(glm::vec3(10, 10, -10), glm::vec3(1.0, 0.8, 0.6), 150, 1.0, 0.3));
 	scene->addPointLight(PointLight(glm::vec3(100, 100, -100), glm::vec3(1.0, 0.8, 0.6), 1500));
 	scene->addPointLight(PointLight(glm::vec3(-10, -10, -10), glm::vec3(0.0, 1.0, 0.0), 20));
 	scene->addPointLight(PointLight(glm::vec3(-10, 15, -10), glm::vec3(1.0, 0.0, 0.0), 170));
 	scene->addPointLight(PointLight(glm::vec3(10, -10, -20), glm::vec3(0.0, 0.0, 1.0), 150));
-	scene->addPointLight(PointLight(glm::vec3(1.5, -1.5, -1), glm::vec3(0.0, 1.0, 1.0), 5,0.2));
-	scene->addPointLight(PointLight(glm::vec3(1.5, 1.5, -1), glm::vec3(1.0, 1.0, 1.0), 4,0.3));
+	scene->addPointLight(PointLight(glm::vec3(1.5, -1.5, -1), glm::vec3(0.0, 1.0, 1.0), 5, 0.2));
+	scene->addPointLight(PointLight(glm::vec3(1.5, 1.5, -1), glm::vec3(1.0, 1.0, 1.0), 4, 0.3));
 }
 
 GlutMainLoop::~GlutMainLoop()
