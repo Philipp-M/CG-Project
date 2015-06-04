@@ -87,8 +87,10 @@ set(SOURCE_FILES
                 CameraSystem.cpp
                 CameraSystem.hpp
                 PointLight.cpp
-                PointLight.hpp)
-add_executable(CG-Project ${SOURCE_FILES} ${SOIL})
+                PointLight.hpp
+                Color.cpp
+                Color.hpp)
+add_executable(CG-Project ${SOURCE_FILES} ${SOIL} )
 target_include_directories(CG-Project PUBLIC ${GLM_INCLUDE_DIR})
 target_link_libraries(CG-Project ${OPENGL_LIBRARIES} ${GLUT_LIBRARY} ${GLEW_LIBRARIES} )
 
