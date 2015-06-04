@@ -4,19 +4,20 @@
 #include <glm/glm.hpp>
 #include <GL/gl.h>
 #include "ShaderProgram.hpp"
+#include "Color.hpp"
 
 class PointLight
 {
 private:
 	glm::vec3 position;
-	glm::vec3 color;
+	Color color;
 	GLfloat intensity;
 	GLfloat ambient;
 	GLfloat attenuation;
 
 public:
 
-	PointLight(const glm::vec3 &position = glm::vec3(0.0), const glm::vec3 &color = glm::vec3(1.0), GLfloat intensity = 1.0f, GLfloat attenuation = 1.0f, GLfloat ambient = 0.1f) :
+	PointLight(const glm::vec3 &position = glm::vec3(0.0), const Color &color = Color::fromRGB(glm::vec3(1)), GLfloat intensity = 1.0f, GLfloat attenuation = 1.0f, GLfloat ambient = 0.1f) :
 			position(position), color(color), intensity(intensity), attenuation(attenuation), ambient(ambient)
 	{ }
 
@@ -26,9 +27,9 @@ public:
 
 	void move(const glm::vec3 &delta);
 
-	const glm::vec3 &getColor() const;
+	const Color &getColor() const;
 
-	void setColor(const glm::vec3 &color);
+	void setColor(const Color &color);
 
 	GLfloat getIntensity() const;
 

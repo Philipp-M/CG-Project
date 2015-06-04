@@ -20,12 +20,12 @@ void PointLight::move(const glm::vec3 &delta)
 	position += delta;
 }
 
-const glm::vec3 &PointLight::getColor() const
+const Color &PointLight::getColor() const
 {
 	return color;
 }
 
-void PointLight::setColor(const glm::vec3 &color)
+void PointLight::setColor(const Color &color)
 {
 	PointLight::color = color;
 }
@@ -63,7 +63,7 @@ void PointLight::setAttenuation(GLfloat attenuation)
 void PointLight::insertInShader(const ShaderProgram &shaderProgram, GLuint num)
 {
 	shaderProgram.setUniform3f("allPointLights[" + SSTR(num) + "].position", position);
-	shaderProgram.setUniform3f("allPointLights[" + SSTR(num) + "].colorIntensity", intensity * color);
+	shaderProgram.setUniform3f("allPointLights[" + SSTR(num) + "].colorIntensity", intensity * color.getRGB());
 	shaderProgram.setUniform1f("allPointLights[" + SSTR(num) + "].attenuation", attenuation);
 	shaderProgram.setUniform1f("allPointLights[" + SSTR(num) + "].ambient", ambient);
 }
