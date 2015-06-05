@@ -86,9 +86,9 @@ Scene::Scene(const std::string &filename)
 	// create a new shader program based on the given file names "vertexshader.vs" and "fragmentshader.fs"
 	// add the shader to the shaderProgramManager singleton, for maybe later independent use
 	GLuint shaderId = ShaderProgramManager::get().addShaderProgram(
-			new ShaderProgram("default", Shader("vertex", "vertexshader.vs", VERTEX),
-			                  Shader("fragment", "fragmentshader.fs", FRAGMENT)));
-	shaderProgram = ShaderProgramManager::get().getShaderById(shaderId);
+			new ShaderProgram("bumpShader", Shader("vertex", "bumpshader.vs", VERTEX), Shader("fragment", "bumpshader.fs", FRAGMENT)));
+	ShaderProgramManager::get().addShaderProgram(
+			new ShaderProgram("lightShader", Shader("vertex", "lightshader.vs", VERTEX), Shader("fragment", "lightshader.fs", FRAGMENT)));
 	loadFromFile(filename);
 }
 
@@ -366,9 +366,12 @@ bool Scene::loadFromFile(const std::string &filename)
 			texNorm = tm.getByID(tm.loadTexture(filename.substr(0, slash + 1) + it->normal_texname));
 		else if (it->normal_texname != "")
 			texNorm = tm.getByID(tm.loadTexture(it->normal_texname));
-		MaterialManager::get().addMaterial(new Material(it->name, glm::vec3(it->diffuse[0], it->diffuse[1], it->diffuse[2]),
-		                                                glm::vec3(it->specular[0], it->specular[1], it->specular[2]), it->shininess + 0.01,
-		                                                texDif, texNorm,
+		const ShaderProgram *shader = it->name.find("light") != std::string::npos ?
+		                              ShaderProgramManager::get().getShaderByName("lightShader") :
+		                              ShaderProgramManager::get().getShaderByName("bumpShader");
+		MaterialManager::get().addMaterial(new Material(it->name, Color::fromRGB(glm::vec3(it->diffuse[0], it->diffuse[1], it->diffuse[2])),
+		                                                Color::fromRGB(glm::vec3(it->specular[0], it->specular[1], it->specular[2])), it->shininess + 0.01,
+		                                                shader, texDif, texNorm,
 		                                                texSpec));
 	}
 	/************** load all the vertices **************/
@@ -381,10 +384,22 @@ bool Scene::loadFromFile(const std::string &filename)
 		vb.computeVertices(vData);
 		std::cout << "adding model: " << name << " with " << shapes[i].mesh.positions.size() << " vertices " << std::endl;
 		// add the model and attach the first material(makes life easier then handling every connected material)
+		// calculate centroid of mesh for the point light source
+		glm::vec3 centroid = glm::vec3(0);
+		for(int j = 0; j < vData.size(); j++)
+			centroid += vData[0].vertex;
+		centroid = centroid / (float)vData.size();
 		if (shapes[i].mesh.material_ids.size() > 0)
-			addModel(new Model(name, vData, iData, MaterialManager::get().getByName(materials[shapes[i].mesh.material_ids[0]].name)));
+		{
+			Material* material = MaterialManager::get().getByNameNonConst(materials[shapes[i].mesh.material_ids[0]].name);
+//			if(material->name.find("light") != std::string::npos)
+//			{
+//				addPointLight(PointLight(vData[0].vertex, Color::fromRGB(material->difColor), 1.0, 0.3));
+//			}
+			addModel(new Model(name, vData, iData, material, centroid));
+		}
 		else
-			addModel(new Model(name, vData, iData, NULL));
+			addModel(new Model(name, vData, iData, NULL, centroid));
 	}
 	/*********** setup Camera ***********/
 	cameraSystem = new CameraSystem(cameraRotation, cameraPosition, cameraWidth, cameraHeight, cameraNearPlane, cameraFarPlane, cameraFOV);
@@ -405,26 +420,42 @@ void Scene::addModel(Model *model)
 
 void Scene::draw()
 {
-	shaderProgram->bind();
+//	shaderProgram->bind();
 	//shaderProgram->setMatrixUniform4f("viewMatrix", cameraSystem->getViewMatrix());
 	//shaderProgram->setMatrixUniform4f("projectionMatrix", cameraSystem->getProjectionMatrix());
 	// init lights
-	shaderProgram->setUniform1i("numPointLights", pointLights.size());
-	shaderProgram->setUniform3f("cameraPosition", cameraSystem->getPosition());
-	for (int i = 0; i < pointLights.size(); i++)
-		pointLights[i].insertInShader(*shaderProgram, i);
+//	shaderProgram->setUniform1i("numPointLights", pointLights.size());
+//	shaderProgram->setUniform3f("cameraPosition", cameraSystem->getPosition());
+//	for (int i = 0; i < pointLights.size(); i++)
+//		pointLights[i].insertInShader(*shaderProgram, i);
 	// draw all models
+	// setup lights
+	pointLights.clear();
+	for (std::vector<Model *>::iterator it = models.begin(); it != models.end(); ++it)
+	{
+		if((*it)->isLight())
+			pointLights.push_back(PointLight((*it)->getCentroid(),(*it)->getMaterial()->difColor));
+	}
 	for (std::vector<Model *>::iterator it = models.begin(); it != models.end(); ++it)
 	{
 		if ((*it) != NULL)
 		{
+			const ShaderProgram* shaderProgram = (*it)->getMaterial()->shader;
+			shaderProgram->bind();
+			if(shaderProgram->getName().find("light") == std::string::npos)
+			{
+				shaderProgram->setUniform1i("numPointLights", pointLights.size());
+				shaderProgram->setUniform3f("cameraPosition", cameraSystem->getPosition());
+				for (int i = 0; i < pointLights.size(); i++)
+					pointLights[i].insertInShader(*shaderProgram, i);
+			}
 			//shaderProgram->setMatrixUniform4f("modelViewMatrix", cameraSystem->getViewMatrix() * (*it)->getTransformationMatrix());
 			shaderProgram->setMatrixUniform4f("MVPMatrix", cameraSystem->getProjectionMatrix() * cameraSystem->getViewMatrix() *
 			                                               (*it)->getTransformationMatrix());
 			(*it)->draw(*shaderProgram);
+			shaderProgram->unbind();
 		}
 	}
-	shaderProgram->unbind();
 }
 
 CameraSystem &Scene::getCameraSystem()

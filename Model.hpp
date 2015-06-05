@@ -15,9 +15,9 @@ public:
 	struct Vertex3
 	{
 		Vertex3(glm::vec3 v = glm::vec3(), glm::vec3 n = glm::vec3(), glm::vec3 t = glm::vec3(), glm::vec2 tex = glm::vec2()) : vertex(v),
-		                                                                                                                      normal(n),
-		                                                                                                                      tangent(t),
-		                                                                                                                      tex(tex)
+		                                                                                                                        normal(n),
+		                                                                                                                        tangent(t),
+		                                                                                                                        tex(tex)
 		{ }
 
 		glm::vec3 vertex;
@@ -33,13 +33,14 @@ private:
 	bool bufferObjectsloaded;
 	std::vector<Vertex3> verticeData;
 	std::vector<GLuint> indices;
-	const Material *material;
+	glm::vec3 centroid;
+	Material *material;
 	glm::mat4 transMat;
 public:
 	/**
 	 * constructs a model with the given name, verticeData and indices
 	 */
-	Model(const std::string &name, const std::vector<Vertex3> &verticeData, const std::vector<GLuint> &indices, const Material *mat);
+	Model(const std::string &name, const std::vector<Vertex3> &verticeData, const std::vector<GLuint> &indices, Material *mat, glm::vec3 centroid);
 
 	/**
 	 * refreshes the buffer objects based on the local data(verticeData and indices)
@@ -51,14 +52,22 @@ public:
 	 * the shaderProgram has to have the uniform variables:
 	 * mat4 ModelMatrix, atrVec3 Position, atrVec3 Color
 	 */
-	void draw(const ShaderProgram& shaderProgram);
+	void draw(const ShaderProgram &shaderProgram);
 
 	/**
 	 * returns the name of the model
 	 */
 	const std::string &getName();
 
-	/*** implemented from the interface Entity ***/
+
+	Material *getMaterial();
+
+	bool isLight() const;
+
+
+	const glm::vec3 & getCentroid() const;
+
+/*** implemented from the interface Entity ***/
 
 	void move(glm::vec3 delta);
 

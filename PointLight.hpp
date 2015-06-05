@@ -11,14 +11,13 @@ class PointLight
 private:
 	glm::vec3 position;
 	Color color;
-	GLfloat intensity;
 	GLfloat ambient;
 	GLfloat attenuation;
 
 public:
 
-	PointLight(const glm::vec3 &position = glm::vec3(0.0), const Color &color = Color::fromRGB(glm::vec3(1)), GLfloat intensity = 1.0f, GLfloat attenuation = 1.0f, GLfloat ambient = 0.1f) :
-			position(position), color(color), intensity(intensity), attenuation(attenuation), ambient(ambient)
+	PointLight(const glm::vec3 &position = glm::vec3(0.0), const Color &color = Color::fromRGB(glm::vec3(1)), GLfloat attenuation = 1.0f, GLfloat ambient = 0.1f) :
+			position(position), color(color), attenuation(attenuation), ambient(ambient)
 	{ }
 
 	const glm::vec3 &getPosition() const;
@@ -30,10 +29,6 @@ public:
 	const Color &getColor() const;
 
 	void setColor(const Color &color);
-
-	GLfloat getIntensity() const;
-
-	void setIntensity(GLfloat intensity);
 
 	GLfloat getAmbient() const;
 

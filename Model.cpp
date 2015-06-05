@@ -3,8 +3,8 @@
 #include "Model.hpp"
 #include "ShaderProgram.hpp"
 
-Model::Model(const std::string &name, const std::vector<Vertex3> &verticeData, const std::vector<GLuint> &indices, const Material *mat) :
-		name(name), verticeData(verticeData), indices(indices), material(mat), transMat(glm::mat4(1.0))
+Model::Model(const std::string &name, const std::vector<Vertex3> &verticeData, const std::vector<GLuint> &indices, Material *mat, glm::vec3 centroid) :
+		name(name), verticeData(verticeData), indices(indices), material(mat), transMat(glm::mat4(1.0)), centroid(centroid)
 {
 	refreshBuffers();
 }
@@ -27,52 +27,59 @@ void Model::refreshBuffers()
 
 void Model::draw(const ShaderProgram &shaderProgram)
 {
-	shaderProgram.setMatrixUniform4f("modelMatrix", getTransformationMatrix());
-	shaderProgram.setMatrixUniform3f("normalMatrix", glm::transpose(glm::inverse(glm::mat3(getTransformationMatrix()))));
-	glEnableVertexAttribArray(shaderProgram.attributeLocation("position"));
 	glBindBuffer(GL_ARRAY_BUFFER, idVert);
+	glEnableVertexAttribArray(shaderProgram.attributeLocation("position"));
 	shaderProgram.vertexAttribPointer("position", 3, GL_FLOAT, sizeof(Vertex3), 0, false);
-	glEnableVertexAttribArray(shaderProgram.attributeLocation("normal"));
-	shaderProgram.vertexAttribPointer("normal", 3, GL_FLOAT, sizeof(Vertex3), (void *) (sizeof(glm::vec3)), false);
-	glEnableVertexAttribArray(shaderProgram.attributeLocation("tangent"));
-	shaderProgram.vertexAttribPointer("tangent", 3, GL_FLOAT, sizeof(Vertex3), (void *) (2 * sizeof(glm::vec3)), false);
-	glEnableVertexAttribArray(shaderProgram.attributeLocation("texCoord"));
-	shaderProgram.vertexAttribPointer("texCoord", 2, GL_FLOAT, sizeof(Vertex3), (void *) (3 * sizeof(glm::vec3)), false);
+	if(material->name.find("light") == std::string::npos)
+	{
+		glEnableVertexAttribArray(shaderProgram.attributeLocation("normal"));
+		shaderProgram.vertexAttribPointer("normal", 3, GL_FLOAT, sizeof(Vertex3), (void *) (sizeof(glm::vec3)), false);
+		glEnableVertexAttribArray(shaderProgram.attributeLocation("tangent"));
+		shaderProgram.vertexAttribPointer("tangent", 3, GL_FLOAT, sizeof(Vertex3), (void *) (2 * sizeof(glm::vec3)), false);
+		glEnableVertexAttribArray(shaderProgram.attributeLocation("texCoord"));
+		shaderProgram.vertexAttribPointer("texCoord", 2, GL_FLOAT, sizeof(Vertex3), (void *) (3 * sizeof(glm::vec3)), false);
+		shaderProgram.setMatrixUniform4f("modelMatrix", getTransformationMatrix());
+		shaderProgram.setMatrixUniform3f("normalMatrix", glm::transpose(glm::inverse(glm::mat3(getTransformationMatrix()))));
+	}
+
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, idIndices);
 	// setup specular
 	if (material != NULL)
 	{
-		shaderProgram.setUniform3f("specColor", material->specColor);
-		shaderProgram.setUniform3f("difColor", material->difColor);
-		shaderProgram.setUniform1f("shininess", material->shininess);
-		// bind the texture(s)
-		// diffuse texture
-		glActiveTexture(GL_TEXTURE0);
-		if (material->colorMap != NULL)
-			glBindTexture(GL_TEXTURE_2D, material->colorMap->id);
-		else
-			glBindTexture(GL_TEXTURE_2D, TextureManager::get().getByID(0)->id);
-		shaderProgram.setUniform1i("diffuseTex", 0);
-		// specular texture
-		if (material->specularMap != NULL)
+		shaderProgram.setUniform3f("difColor", material->difColor.getRGB());
+		if(material->name.find("light") == std::string::npos)
 		{
-			shaderProgram.setUniform1i("useSpecularMapping", 1);
-			glActiveTexture(GL_TEXTURE1);
-			glBindTexture(GL_TEXTURE_2D, material->specularMap->id);
-			shaderProgram.setUniform1i("specularTex", 1);
+			shaderProgram.setUniform3f("specColor", material->specColor.getRGB());
+			shaderProgram.setUniform1f("shininess", material->shininess);
+			// bind the texture(s)
+			// diffuse texture
+			glActiveTexture(GL_TEXTURE0);
+			if (material->colorMap != NULL)
+				glBindTexture(GL_TEXTURE_2D, material->colorMap->id);
+			else
+				glBindTexture(GL_TEXTURE_2D, TextureManager::get().getByID(0)->id);
+			shaderProgram.setUniform1i("diffuseTex", 0);
+			// specular texture
+			if (material->specularMap != NULL)
+			{
+				shaderProgram.setUniform1i("useSpecularMapping", 1);
+				glActiveTexture(GL_TEXTURE1);
+				glBindTexture(GL_TEXTURE_2D, material->specularMap->id);
+				shaderProgram.setUniform1i("specularTex", 1);
+			}
+			else
+				shaderProgram.setUniform1i("useSpecularMapping", 0);
+			// normal texture
+			if (material->normalMap != NULL)
+			{
+				shaderProgram.setUniform1i("useNormalMapping", 1);
+				glActiveTexture(GL_TEXTURE2);
+				glBindTexture(GL_TEXTURE_2D, material->normalMap->id);
+				shaderProgram.setUniform1i("normalTex", 2);
+			}
+			else
+				shaderProgram.setUniform1i("useNormalMapping", 0);
 		}
-		else
-			shaderProgram.setUniform1i("useSpecularMapping", 0);
-		// normal texture
-		if (material->normalMap != NULL)
-		{
-			shaderProgram.setUniform1i("useNormalMapping", 1);
-			glActiveTexture(GL_TEXTURE2);
-			glBindTexture(GL_TEXTURE_2D, material->normalMap->id);
-			shaderProgram.setUniform1i("normalTex", 2);
-		}
-		else
-			shaderProgram.setUniform1i("useNormalMapping", 0);
 	}
 
 	GLint size;
@@ -129,3 +136,17 @@ void Model::resetTransformationMatrix()
 	transMat = glm::mat4(1.0);
 }
 
+Material *Model::getMaterial()
+{
+	return material;
+}
+
+bool Model::isLight() const
+{
+	return material->name.find("light") != std::string::npos;
+}
+
+const glm::vec3 &Model::getCentroid() const
+{
+	return centroid;
+}

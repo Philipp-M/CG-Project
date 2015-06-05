@@ -30,16 +30,6 @@ void PointLight::setColor(const Color &color)
 	PointLight::color = color;
 }
 
-GLfloat PointLight::getIntensity() const
-{
-	return intensity;
-}
-
-void PointLight::setIntensity(GLfloat intensity)
-{
-	PointLight::intensity = intensity;
-}
-
 GLfloat PointLight::getAmbient() const
 {
 	return ambient;
@@ -63,7 +53,7 @@ void PointLight::setAttenuation(GLfloat attenuation)
 void PointLight::insertInShader(const ShaderProgram &shaderProgram, GLuint num)
 {
 	shaderProgram.setUniform3f("allPointLights[" + SSTR(num) + "].position", position);
-	shaderProgram.setUniform3f("allPointLights[" + SSTR(num) + "].colorIntensity", intensity * color.getRGB());
+	shaderProgram.setUniform3f("allPointLights[" + SSTR(num) + "].colorIntensity", color.getRGB());
 	shaderProgram.setUniform1f("allPointLights[" + SSTR(num) + "].attenuation", attenuation);
 	shaderProgram.setUniform1f("allPointLights[" + SSTR(num) + "].ambient", ambient);
 }

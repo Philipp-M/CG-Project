@@ -78,7 +78,7 @@ void main()
 	    vec3 specLight = vec3(0, 0, 0);
 	    if(cosNorm > 0.0)
 	    {
-	        vec3 posToCamera = normalize(cameraPosition - pos);
+	        vec3 posToCamera = normalize(pos - cameraPosition);
 			vec3 refVector = reflect(-posToLight, normal);
 	        float cosRefl = max(0.0, dot(posToCamera, refVector));
 			float specCof = pow(cosRefl, 0.01+shine);

@@ -18,7 +18,6 @@ private:
 	 * temporary variable will hopefully in future be loaded within the scene loader or
 	 * with functions that recognize which material is inside the obj file
 	 */
-	const ShaderProgram *shaderProgram;
 
 	void deleteAllModels();
 
