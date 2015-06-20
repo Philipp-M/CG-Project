@@ -10,6 +10,7 @@
 #include "picojson.hpp"
 #include "TextureManager.hpp"
 #include "MaterialManager.hpp"
+#include "GlutMainLoop.hpp"
 
 class VertexBuilder
 {
@@ -370,7 +371,8 @@ bool Scene::loadFromFile(const std::string &filename)
 		                              ShaderProgramManager::get().getShaderByName("lightShader") :
 		                              ShaderProgramManager::get().getShaderByName("bumpShader");
 		MaterialManager::get().addMaterial(new Material(it->name, Color::fromRGB(glm::vec3(it->diffuse[0], it->diffuse[1], it->diffuse[2])),
-		                                                Color::fromRGB(glm::vec3(it->specular[0], it->specular[1], it->specular[2])), it->shininess + 0.01,
+		                                                Color::fromRGB(glm::vec3(it->specular[0], it->specular[1], it->specular[2])),
+		                                                it->shininess + 0.01,
 		                                                shader, texDif, texNorm,
 		                                                texSpec));
 	}
@@ -384,18 +386,14 @@ bool Scene::loadFromFile(const std::string &filename)
 		vb.computeVertices(vData);
 		std::cout << "adding model: " << name << " with " << shapes[i].mesh.positions.size() << " vertices " << std::endl;
 		// add the model and attach the first material(makes life easier then handling every connected material)
-		// calculate centroid of mesh for the point light source
+		// calculate centroid of mesh (for now only) for the point light source
 		glm::vec3 centroid = glm::vec3(0);
-		for(int j = 0; j < vData.size(); j++)
-			centroid += vData[0].vertex;
-		centroid = centroid / (float)vData.size();
+		for (int j = 0; j < vData.size()/3; j++)
+			centroid += vData[j].vertex;
+		centroid = centroid / (float) (vData.size()/3.0);
 		if (shapes[i].mesh.material_ids.size() > 0)
 		{
-			Material* material = MaterialManager::get().getByNameNonConst(materials[shapes[i].mesh.material_ids[0]].name);
-//			if(material->name.find("light") != std::string::npos)
-//			{
-//				addPointLight(PointLight(vData[0].vertex, Color::fromRGB(material->difColor), 1.0, 0.3));
-//			}
+			Material *material = MaterialManager::get().getByNameNonConst(materials[shapes[i].mesh.material_ids[0]].name);
 			addModel(new Model(name, vData, iData, material, centroid));
 		}
 		else
@@ -433,17 +431,33 @@ void Scene::draw()
 	pointLights.clear();
 	for (std::vector<Model *>::iterator it = models.begin(); it != models.end(); ++it)
 	{
-		if((*it)->isLight())
-			pointLights.push_back(PointLight((*it)->getCentroid(),(*it)->getMaterial()->difColor));
+		if ((*it)->isLight())
+			pointLights.push_back(PointLight(glm::vec3((*it)->getTransformationMatrix() * glm::vec4((*it)->getCentroid(), 1.0)),
+			                                 (*it)->getMaterial()->difColor, 1.0, 0.001));
 	}
 	for (std::vector<Model *>::iterator it = models.begin(); it != models.end(); ++it)
 	{
 		if ((*it) != NULL)
 		{
-			const ShaderProgram* shaderProgram = (*it)->getMaterial()->shader;
+			const ShaderProgram *shaderProgram = (*it)->getMaterial()->shader;
 			shaderProgram->bind();
-			if(shaderProgram->getName().find("light") == std::string::npos)
+			if (!(*it)->isLight())
 			{
+				//ugly but time matters...
+				GlutMainLoop& gml = GlutMainLoop::get();
+				if(gml.isUseDiffuseLightning())
+					shaderProgram->setUniform1i("useDiffuseLightning", 1);
+				else
+					shaderProgram->setUniform1i("useDiffuseLightning", 0);
+				if(gml.isUseAmbientLightning())
+					shaderProgram->setUniform1i("useAmbientLightning", 1);
+				else
+					shaderProgram->setUniform1i("useAmbientLightning", 0);
+				if(gml.isUseSpecularLightning())
+					shaderProgram->setUniform1i("useSpecularLightning", 1);
+				else
+					shaderProgram->setUniform1i("useSpecularLightning", 0);
+
 				shaderProgram->setUniform1i("numPointLights", pointLights.size());
 				shaderProgram->setUniform3f("cameraPosition", cameraSystem->getPosition());
 				for (int i = 0; i < pointLights.size(); i++)

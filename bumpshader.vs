@@ -22,7 +22,7 @@ void main()
 
 	gl_Position = MVPMatrix * vec4(position.x, position.y, position.z, 1.0);
 	vTangent = tangent;
-	vPosition = position;
+	vPosition = vec3(modelMatrix * vec4(position, 1));
 	vPosView = vec3(modelViewMatrix * vec4(position, 1.0));
 	vNormal = normal;
 	vTexCoord = texCoord;

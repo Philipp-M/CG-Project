@@ -16,6 +16,9 @@ private:
 	float merryHeight1;
 	float merryHeight2;
 	bool automaticMode;
+	bool useDiffuseLightning;
+	bool useSpecularLightning;
+	bool useAmbientLightning;
 
 	GlutMainLoop();
 
@@ -42,6 +45,12 @@ public:
 
 	void keyboardUpFunc(uint8_t k, int x, int y);
 
+
+	bool isUseDiffuseLightning() const;
+
+	bool isUseSpecularLightning() const;
+
+	bool isUseAmbientLightning() const;
 };
 
 

@@ -23,6 +23,10 @@ uniform sampler2D normalTex;
 uniform int useNormalMapping;
 uniform int useSpecularMapping;
 
+uniform int useDiffuseLightning;
+uniform int useSpecularLightning;
+uniform int useAmbientLightning;
+
 uniform vec3 specColor;
 uniform vec3 difColor;
 uniform float shininess;
@@ -59,33 +63,40 @@ void main()
         normal = normalize(normalMatrix * vNormal);
 	float shine = shininess;
     if(useSpecularMapping == 1)
-        shine *= texture(specularTex, vTexCoord).r*3;
+        shine *= texture(specularTex, vTexCoord).r*10;
 
-	vec3 pos = vec3(modelMatrix * vec4(vPosition, 1));
     for(int i = 0; i < numPointLights; ++i)
     {
-	    vec3 posToLight = allPointLights[i].position - pos;
+	    vec3 posToLight = allPointLights[i].position - vPosition;
 		float disToLight = length(posToLight);
 		posToLight = normalize(posToLight);
 		// ambient lightning
-		vec3 ambientLight = allPointLights[i].ambient * texColor.rgb;
+		vec3 ambientLight = vec3(0.0,0.0,0.0);
+		if(useAmbientLightning == 1)
+			ambientLight = allPointLights[i].ambient * texColor.rgb;
 		// diffuse lightning
 	    float cosNorm = max(0.0, dot(normal, posToLight));
 
-	    vec3 difLight = cosNorm * texColor.rgb;
+	    vec3 difLight = vec3(0.0,0.0,0.0);
+	    if(useDiffuseLightning == 1)
+	        difLight = cosNorm * texColor.rgb;
 
 	    // specular lightning
 	    vec3 specLight = vec3(0, 0, 0);
-	    if(cosNorm > 0.0)
+	    if(useSpecularLightning == 1)
 	    {
-	        vec3 posToCamera = normalize(pos - cameraPosition);
-			vec3 refVector = reflect(-posToLight, normal);
-	        float cosRefl = max(0.0, dot(posToCamera, refVector));
-			float specCof = pow(cosRefl, 0.01+shine);
-			specLight = specCof * specColor ;
+	        if(cosNorm > 0.0)
+	        {
+	            vec3 posc = vec3(-cameraPosition.x, -cameraPosition.y, -cameraPosition.z);
+	            vec3 posToCamera = normalize(posc - vPosition);
+				vec3 refVector = reflect(-posToLight, normal);
+	            float cosRefl = max(0.0, dot(posToCamera,refVector));
+				float specCof = pow(cosRefl, 0.01+shine);
+				specLight = specCof * specColor ;
+			}
 	    }
 
 	    float attenuation = 1.0 / (1.0 + allPointLights[i].attenuation * disToLight * disToLight);
-	    FragColor += vec4(attenuation * allPointLights[i].colorIntensity * (ambientLight + difLight + 1*specLight), 0.0);
+	    FragColor += vec4(attenuation * allPointLights[i].colorIntensity * (difLight + 1*specLight) + allPointLights[i].colorIntensity * ambientLight , 0.0);
 	}
 }

@@ -2,7 +2,8 @@
 #include <GL/freeglut.h>
 #include "GlutMainLoop.hpp"
 
-GlutMainLoop::GlutMainLoop() : movementSpeed(0.005), merrySpeed(-0.0005), maxMerryHeight(0.3), merryHeight1(0), automaticMode(true)
+GlutMainLoop::GlutMainLoop() : movementSpeed(0.005), merrySpeed(-0.0005), maxMerryHeight(0.3), merryHeight1(0), automaticMode(true),
+                               useAmbientLightning(true), useDiffuseLightning(true), useSpecularLightning(true)
 {
 	for (int i = 0; i < 256; i++)
 		pressedKeys[i] = false;
@@ -49,7 +50,8 @@ void GlutMainLoop::onIdle()
 		const std::string &name = models[i]->getName();
 		// following if-statement is *not* super efficent, but thats not the subject of the course... just wanna note that...
 		if (name == "horse1" || name == "horse2" || name == "horse3" || name == "horse4" || name == "horse5" || name == "horse6" ||
-		    name == "horse7" || name == "horse8" || name == "Top" || name == "Bottom" || name == "Pole" || name == "HandPoles")
+		    name == "horse7" || name == "horse8" || name == "Top" || name == "Bottom" || name == "Pole" || name == "HandPoles" ||
+		    name == "LightMerry1" || name == "LightMerry2" || name == "LightMerry3" || name == "LightMerry4")
 		{
 			merryRotation = merrySpeed * deltaElapsedTime;
 			models[i]->rotate(glm::vec3(0.000, 0.000, merryRotation));
@@ -157,18 +159,92 @@ void GlutMainLoop::keyboardFunc(uint8_t k, int x, int y)
 		case '_':
 			merrySpeed += 0.0001;
 	        break;
+		case 'y':
+				useDiffuseLightning = !useDiffuseLightning;
+			break;
+		case 'x':
+				useSpecularLightning = !useSpecularLightning;
+			break;
+		case 'c':
+				useAmbientLightning = !useAmbientLightning;
+			break;
+		case 'v':
+			for (int i = 0; i < models.size(); i++)
+			{
+				if(models[i]->isLight())
+				{
+					Color& c = models[i]->getMaterial()->difColor;
+					c.setHue(360.0f*(rand()%INT32_MAX)/(float)INT32_MAX);
+				}
+			}
+			break;
+		case 'b':
+			for (int i = 0; i < models.size(); i++)
+			{
+				if(models[i]->isLight())
+				{
+					Color& c = models[i]->getMaterial()->difColor;
+					c.setValue(c.getHSV().z*1.1);
+				}
+			}
+	        break;
+		case 'n':
+			for (int i = 0; i < models.size(); i++)
+			{
+				if(models[i]->isLight())
+				{
+					Color& c = models[i]->getMaterial()->difColor;
+					c.setValue(c.getHSV().z*0.9);
+				}
+			}
+	        break;
+		case 'm':
+			for (int i = 0; i < models.size(); i++)
+			{
+				if(models[i]->isLight())
+				{
+					Color& c = models[i]->getMaterial()->difColor;
+					c.setSaturation(c.getHSV().y*1.1);
+				}
+			}
+	        break;
+		case ',':
+			for (int i = 0; i < models.size(); i++)
+			{
+				if(models[i]->isLight())
+				{
+					Color& c = models[i]->getMaterial()->difColor;
+					c.setSaturation(c.getHSV().y*0.9);
+				}
+			}
+	        break;
 		case 't':
 			automaticMode = !automaticMode;
-	        for (int i = 0; i < models.size(); i++)
-		        models[i]->resetTransformationMatrix();
 	        merryRotation = 0;
 	        merryHeight1 = 0;
 	        merryHeight2 = 0;
 	        scene->getCameraSystem().setPosition(glm::vec3(0, 3.514, 1.623));
 	        scene->getCameraSystem().setRotation(glm::vec3(M_PI / 2, 0, M_PI / 2));
+	        for (int i = 0; i < models.size(); i++)
+				models[i]->resetTransformationMatrix();
 	        break;
 
 		default:
 			break;
 	}
+}
+
+bool GlutMainLoop::isUseDiffuseLightning() const
+{
+	return useDiffuseLightning;
+}
+
+bool GlutMainLoop::isUseSpecularLightning() const
+{
+	return useSpecularLightning;
+}
+
+bool GlutMainLoop::isUseAmbientLightning() const
+{
+	return useAmbientLightning;
 }
