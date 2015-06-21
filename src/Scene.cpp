@@ -87,12 +87,12 @@ Scene::Scene(const std::string &filename)
 	// create a new shader program based on the given file names "vertexshader.vs" and "fragmentshader.fs"
 	// add the shader to the shaderProgramManager singleton, for maybe later independent use
 	GLuint shaderId = ShaderProgramManager::get().addShaderProgram(
-			new ShaderProgram("bumpShader", Shader("vertex", "bumpshader.vs", VERTEX), Shader("fragment", "bumpshader.fs", FRAGMENT)));
+			new ShaderProgram("bumpShader", Shader("vertex", "shaders/bumpshader.vs", VERTEX), Shader("fragment", "shaders/bumpshader.fs", FRAGMENT)));
 	ShaderProgramManager::get().addShaderProgram(
-			new ShaderProgram("lightShader", Shader("vertex", "lightshader.vs", VERTEX), Shader("fragment", "lightshader.fs", FRAGMENT)));
+			new ShaderProgram("lightShader", Shader("vertex", "shaders/lightshader.vs", VERTEX), Shader("fragment", "shaders/lightshader.fs", FRAGMENT)));
 //	ShaderProgramManager::get().addShaderProgram(
-//			new ShaderProgram("billboardShader", Shader("vertex", "billboardshader.vs", VERTEX),
-//			                  Shader("fragment", "billboardshader.fs", FRAGMENT)));
+//			new ShaderProgram("billboardShader", Shader("vertex", "shaders/billboardshader.vs", VERTEX),
+//			                  Shader("fragment", "shaders/billboardshader.fs", FRAGMENT)));
 	loadFromFile(filename);
 }
 
