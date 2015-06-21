@@ -68,7 +68,7 @@ public:
 
 	void computeVertices(std::vector<Model::Vertex3> &vertices)
 	{
-		vertices.resize(mesh.positions.size());
+		vertices.resize(mesh.positions.size() / 3);
 		for (GLuint i = 0; i < mesh.positions.size() / 3; i++)
 		{
 			vertices[i] = Model::Vertex3(glm::vec3(mesh.positions[i * 3], mesh.positions[i * 3 + 1], mesh.positions[i * 3 + 2]),
@@ -90,6 +90,9 @@ Scene::Scene(const std::string &filename)
 			new ShaderProgram("bumpShader", Shader("vertex", "bumpshader.vs", VERTEX), Shader("fragment", "bumpshader.fs", FRAGMENT)));
 	ShaderProgramManager::get().addShaderProgram(
 			new ShaderProgram("lightShader", Shader("vertex", "lightshader.vs", VERTEX), Shader("fragment", "lightshader.fs", FRAGMENT)));
+//	ShaderProgramManager::get().addShaderProgram(
+//			new ShaderProgram("billboardShader", Shader("vertex", "billboardshader.vs", VERTEX),
+//			                  Shader("fragment", "billboardshader.fs", FRAGMENT)));
 	loadFromFile(filename);
 }
 
@@ -367,9 +370,15 @@ bool Scene::loadFromFile(const std::string &filename)
 			texNorm = tm.getByID(tm.loadTexture(filename.substr(0, slash + 1) + it->normal_texname));
 		else if (it->normal_texname != "")
 			texNorm = tm.getByID(tm.loadTexture(it->normal_texname));
-		const ShaderProgram *shader = it->name.find("light") != std::string::npos ?
-		                              ShaderProgramManager::get().getShaderByName("lightShader") :
-		                              ShaderProgramManager::get().getShaderByName("bumpShader");
+		const ShaderProgram *shader;
+
+		if (it->name.find("light") != std::string::npos)
+			shader = ShaderProgramManager::get().getShaderByName("lightShader");
+		else if (it->name.find("billboardCylinder") != std::string::npos)
+			shader = ShaderProgramManager::get().getShaderByName("bumpShader");
+		else
+			shader = ShaderProgramManager::get().getShaderByName("bumpShader");
+
 		MaterialManager::get().addMaterial(new Material(it->name, Color::fromRGB(glm::vec3(it->diffuse[0], it->diffuse[1], it->diffuse[2])),
 		                                                Color::fromRGB(glm::vec3(it->specular[0], it->specular[1], it->specular[2])),
 		                                                it->shininess + 0.01,
@@ -388,12 +397,17 @@ bool Scene::loadFromFile(const std::string &filename)
 		// add the model and attach the first material(makes life easier then handling every connected material)
 		// calculate centroid of mesh (for now only) for the point light source
 		glm::vec3 centroid = glm::vec3(0);
-		for (int j = 0; j < vData.size()/3; j++)
+		for (int j = 0; j < vData.size(); j++)
 			centroid += vData[j].vertex;
-		centroid = centroid / (float) (vData.size()/3.0);
+		centroid = centroid / (float) (vData.size());
 		if (shapes[i].mesh.material_ids.size() > 0)
 		{
 			Material *material = MaterialManager::get().getByNameNonConst(materials[shapes[i].mesh.material_ids[0]].name);
+			if (material->name.find("billboard") != std::string::npos)
+			{
+				for (int j = 0; j < vData.size(); j++)
+					vData[j].vertex = vData[j].vertex - centroid;
+			}
 			addModel(new Model(name, vData, iData, material, centroid));
 		}
 		else
@@ -432,8 +446,10 @@ void Scene::draw()
 	for (std::vector<Model *>::iterator it = models.begin(); it != models.end(); ++it)
 	{
 		if ((*it)->isLight())
-			pointLights.push_back(PointLight(glm::vec3((*it)->getTransformationMatrix() * glm::vec4((*it)->getCentroid(), 1.0)),
-			                                 (*it)->getMaterial()->difColor, 1.0, 0.001));
+			pointLights.push_back(
+					PointLight(
+							glm::vec3((*it)->getTransformationMatrix(cameraSystem->getPosition()) * glm::vec4((*it)->getCentroid(), 1.0)),
+							(*it)->getMaterial()->difColor, 0.5, 0.001));
 	}
 	for (std::vector<Model *>::iterator it = models.begin(); it != models.end(); ++it)
 	{
@@ -444,29 +460,27 @@ void Scene::draw()
 			if (!(*it)->isLight())
 			{
 				//ugly but time matters...
-				GlutMainLoop& gml = GlutMainLoop::get();
-				if(gml.isUseDiffuseLightning())
+				GlutMainLoop &gml = GlutMainLoop::get();
+				if (gml.isUseDiffuseLightning())
 					shaderProgram->setUniform1i("useDiffuseLightning", 1);
 				else
 					shaderProgram->setUniform1i("useDiffuseLightning", 0);
-				if(gml.isUseAmbientLightning())
+				if (gml.isUseAmbientLightning())
 					shaderProgram->setUniform1i("useAmbientLightning", 1);
 				else
 					shaderProgram->setUniform1i("useAmbientLightning", 0);
-				if(gml.isUseSpecularLightning())
+				if (gml.isUseSpecularLightning())
 					shaderProgram->setUniform1i("useSpecularLightning", 1);
 				else
 					shaderProgram->setUniform1i("useSpecularLightning", 0);
-
-				shaderProgram->setUniform1i("numPointLights", pointLights.size());
 				shaderProgram->setUniform3f("cameraPosition", cameraSystem->getPosition());
+				shaderProgram->setUniform1i("numPointLights", pointLights.size());
 				for (int i = 0; i < pointLights.size(); i++)
 					pointLights[i].insertInShader(*shaderProgram, i);
 			}
-			//shaderProgram->setMatrixUniform4f("modelViewMatrix", cameraSystem->getViewMatrix() * (*it)->getTransformationMatrix());
 			shaderProgram->setMatrixUniform4f("MVPMatrix", cameraSystem->getProjectionMatrix() * cameraSystem->getViewMatrix() *
-			                                               (*it)->getTransformationMatrix());
-			(*it)->draw(*shaderProgram);
+			                                               (*it)->getTransformationMatrix(cameraSystem->getPosition()));
+			(*it)->draw(*shaderProgram, cameraSystem->getPosition());
 			shaderProgram->unbind();
 		}
 	}

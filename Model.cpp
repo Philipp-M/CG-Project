@@ -3,7 +3,8 @@
 #include "Model.hpp"
 #include "ShaderProgram.hpp"
 
-Model::Model(const std::string &name, const std::vector<Vertex3> &verticeData, const std::vector<GLuint> &indices, Material *mat, glm::vec3 centroid) :
+Model::Model(const std::string &name, const std::vector<Vertex3> &verticeData, const std::vector<GLuint> &indices, Material *mat,
+             glm::vec3 centroid) :
 		name(name), verticeData(verticeData), indices(indices), material(mat), transMat(glm::mat4(1.0)), centroid(centroid)
 {
 	refreshBuffers();
@@ -25,12 +26,12 @@ void Model::refreshBuffers()
 	bufferObjectsloaded = true;
 }
 
-void Model::draw(const ShaderProgram &shaderProgram)
+void Model::draw(const ShaderProgram &shaderProgram, const glm::vec3 &cameraPosition)
 {
 	glBindBuffer(GL_ARRAY_BUFFER, idVert);
 	glEnableVertexAttribArray(shaderProgram.attributeLocation("position"));
 	shaderProgram.vertexAttribPointer("position", 3, GL_FLOAT, sizeof(Vertex3), 0, false);
-	if(material->name.find("light") == std::string::npos)
+	if (!isLight())
 	{
 		glEnableVertexAttribArray(shaderProgram.attributeLocation("normal"));
 		shaderProgram.vertexAttribPointer("normal", 3, GL_FLOAT, sizeof(Vertex3), (void *) (sizeof(glm::vec3)), false);
@@ -38,16 +39,16 @@ void Model::draw(const ShaderProgram &shaderProgram)
 		shaderProgram.vertexAttribPointer("tangent", 3, GL_FLOAT, sizeof(Vertex3), (void *) (2 * sizeof(glm::vec3)), false);
 		glEnableVertexAttribArray(shaderProgram.attributeLocation("texCoord"));
 		shaderProgram.vertexAttribPointer("texCoord", 2, GL_FLOAT, sizeof(Vertex3), (void *) (3 * sizeof(glm::vec3)), false);
-		shaderProgram.setMatrixUniform4f("modelMatrix", getTransformationMatrix());
-		shaderProgram.setMatrixUniform3f("normalMatrix", glm::transpose(glm::inverse(glm::mat3(getTransformationMatrix()))));
+		shaderProgram.setMatrixUniform4f("modelMatrix", getTransformationMatrix(cameraPosition));
+		shaderProgram.setMatrixUniform3f("normalMatrix", glm::transpose(glm::inverse(glm::mat3(
+				getTransformationMatrix(cameraPosition)))));
 	}
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, idIndices);
-	// setup specular
 	if (material != NULL)
 	{
 		shaderProgram.setUniform3f("difColor", material->difColor.getRGB());
-		if(material->name.find("light") == std::string::npos)
+		if (!isLight())
 		{
 			shaderProgram.setUniform3f("specColor", material->specColor.getRGB());
 			shaderProgram.setUniform1f("shininess", material->shininess);
@@ -79,6 +80,7 @@ void Model::draw(const ShaderProgram &shaderProgram)
 			}
 			else
 				shaderProgram.setUniform1i("useNormalMapping", 0);
+
 		}
 	}
 
@@ -87,8 +89,12 @@ void Model::draw(const ShaderProgram &shaderProgram)
 	glDrawElements(GL_TRIANGLES, (GLsizei) (size / sizeof(GLuint)), GL_UNSIGNED_INT, 0);
 }
 
-glm::mat4 Model::getTransformationMatrix() const
+glm::mat4 Model::getTransformationMatrix(const glm::vec3 &cameraPosition) const
 {
+	if (isBillboardCylinder())
+		return billboardCylinder(cameraPosition);
+	else if (isBillboardSphere())
+		return billboardSphere(cameraPosition);
 	return transMat;
 }
 
@@ -108,17 +114,48 @@ void Model::rotate(glm::vec3 delta)
 	            glm::rotate(delta.z, glm::vec3(0, 0, 1));
 }
 
+glm::mat4 Model::billboardCylinder(const glm::vec3 &cameraPosition) const
+{
+
+	glm::vec3 lookAt = glm::vec3(0, 1, 0);
+	glm::vec3 position = glm::vec3(transMat*glm::vec4(getCentroid(),1));
+	glm::vec3 objToCamProj = -cameraPosition - position;
+	objToCamProj.z = 0;
+	objToCamProj = glm::normalize(objToCamProj);
+	glm::vec3 upAux = glm::cross(lookAt, objToCamProj);
+	GLfloat angleCos = glm::dot(lookAt, objToCamProj);
+	glm::mat4 bMat = glm::translate(getCentroid());
+	bMat *= glm::rotate((float) acos(angleCos), upAux);
+	return bMat;
+}
+
+glm::mat4 Model::billboardSphere(const glm::vec3 &cameraPosition) const
+{
+	// cylindrical part
+	glm::vec3 lookAt = glm::vec3(0, 1, 0);
+	glm::vec3 position = glm::vec3(transMat*glm::vec4(getCentroid(),1));
+	glm::vec3 objToCamProj = -cameraPosition - position;
+	objToCamProj.z = 0;
+	objToCamProj = glm::normalize(objToCamProj);
+	glm::vec3 upAux = glm::cross(lookAt, objToCamProj);
+	GLfloat angleCos = glm::dot(lookAt, objToCamProj);
+	glm::mat4 bMat = glm::translate(position);
+	bMat *= glm::rotate((float) acos(angleCos), upAux);
+
+	// spherical part
+
+	glm::vec3 objToCam = glm::normalize(-cameraPosition - position);
+	angleCos = glm::dot(objToCamProj, objToCam);
+	if (objToCam.z < 0)
+		bMat *= glm::rotate((float) acos(angleCos), glm::vec3(-1, 0, 0));
+	else
+		bMat *= glm::rotate((float) acos(angleCos), glm::vec3(1, 0, 0));
+	return bMat;
+}
+
 void Model::rotateAroundAxis(glm::vec3 a, float w)
 {
-	a = glm::normalize(a);
-	float cosA = cos(w);
-	float sinA = sin(w);
-	glm::mat4 rot((a.x * a.x * (1 - cosA) + cosA), (a.x * a.y * (1 - cosA) - a.z * sinA), (a.x * a.z * (1 - cosA) + a.y * sinA), 0,
-	              (a.x * a.y * (1 - cosA) + a.z * sinA), (a.y * a.y * (1 - cosA) + a.z * cosA), (a.y * a.z * (1 - cosA) - a.x * sinA), 0,
-	              (a.x * a.z * (1 - cosA) - a.y * sinA), (a.y * a.z * (1 - cosA) + a.x * sinA), (a.z * a.z * (1 - cosA) + cosA), 0,
-	              0, 0, 0, 1);
-	transMat *= rot;
-
+	transMat *= glm::rotate(w, a);
 }
 
 void Model::move(glm::vec3 delta)
@@ -141,12 +178,28 @@ Material *Model::getMaterial()
 	return material;
 }
 
+bool Model::isBillboard() const
+{
+	return material != NULL ? material->name.find("billboard") != std::string::npos : false;
+}
+
+bool Model::isBillboardCylinder() const
+{
+	return material != NULL ? material->name.find("billboardC") != std::string::npos : false;
+}
+
+bool Model::isBillboardSphere() const
+{
+	return material != NULL ? material->name.find("billboardS") != std::string::npos : false;
+}
+
 bool Model::isLight() const
 {
-	return material->name.find("light") != std::string::npos;
+	return material != NULL ? material->name.find("light") != std::string::npos : false;
 }
 
 const glm::vec3 &Model::getCentroid() const
 {
 	return centroid;
 }
+

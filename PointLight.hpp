@@ -16,7 +16,7 @@ private:
 
 public:
 
-	PointLight(const glm::vec3 &position = glm::vec3(0.0), const Color &color = Color::fromRGB(glm::vec3(1)), GLfloat attenuation = 1.0f, GLfloat ambient = 0.1f) :
+	PointLight(const glm::vec3 &position = glm::vec3(0.0), const Color &color = Color::fromRGB(glm::vec3(1)), GLfloat attenuation = 0.5f, GLfloat ambient = 0.1f) :
 			position(position), color(color), attenuation(attenuation), ambient(ambient)
 	{ }
 

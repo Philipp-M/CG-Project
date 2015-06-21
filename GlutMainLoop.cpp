@@ -51,13 +51,14 @@ void GlutMainLoop::onIdle()
 		// following if-statement is *not* super efficent, but thats not the subject of the course... just wanna note that...
 		if (name == "horse1" || name == "horse2" || name == "horse3" || name == "horse4" || name == "horse5" || name == "horse6" ||
 		    name == "horse7" || name == "horse8" || name == "Top" || name == "Bottom" || name == "Pole" || name == "HandPoles" ||
-		    name == "LightMerry1" || name == "LightMerry2" || name == "LightMerry3" || name == "LightMerry4")
+		    name == "healthBar" || name == "LightMerry1" || name == "LightMerry2" || name == "LightMerry3" || name == "LightMerry4" ||
+		    name == "LightMerry5")
 		{
 			merryRotation = merrySpeed * deltaElapsedTime;
 			models[i]->rotate(glm::vec3(0.000, 0.000, merryRotation));
 		}
 		if (models[i]->getName() == "horse1" || models[i]->getName() == "horse3" || models[i]->getName() == "horse5" ||
-		    models[i]->getName() == "horse7")
+		    models[i]->getName() == "horse7" || name == "healthBar")
 		{
 			merryHeight1 = (float) (-maxMerryHeight + maxMerryHeight * std::sin(0.0015 * glutGet(GLUT_ELAPSED_TIME)));
 			models[i]->move(glm::vec3(0, 0, merryHeight1 - oldMerryHeight1));
@@ -160,61 +161,61 @@ void GlutMainLoop::keyboardFunc(uint8_t k, int x, int y)
 			merrySpeed += 0.0001;
 	        break;
 		case 'y':
-				useDiffuseLightning = !useDiffuseLightning;
-			break;
+			useDiffuseLightning = !useDiffuseLightning;
+	        break;
 		case 'x':
-				useSpecularLightning = !useSpecularLightning;
-			break;
+			useSpecularLightning = !useSpecularLightning;
+	        break;
 		case 'c':
-				useAmbientLightning = !useAmbientLightning;
-			break;
+			useAmbientLightning = !useAmbientLightning;
+	        break;
 		case 'v':
 			for (int i = 0; i < models.size(); i++)
 			{
-				if(models[i]->isLight())
+				if (models[i]->isLight())
 				{
-					Color& c = models[i]->getMaterial()->difColor;
-					c.setHue(360.0f*(rand()%INT32_MAX)/(float)INT32_MAX);
+					Color &c = models[i]->getMaterial()->difColor;
+					c.setHue(360.0f * (rand() % INT32_MAX) / (float) INT32_MAX);
 				}
 			}
-			break;
+	        break;
 		case 'b':
 			for (int i = 0; i < models.size(); i++)
 			{
-				if(models[i]->isLight())
+				if (models[i]->isLight())
 				{
-					Color& c = models[i]->getMaterial()->difColor;
-					c.setValue(c.getHSV().z*1.1);
+					Color &c = models[i]->getMaterial()->difColor;
+					c.setValue(c.getHSV().z * 1.1);
 				}
 			}
 	        break;
 		case 'n':
 			for (int i = 0; i < models.size(); i++)
 			{
-				if(models[i]->isLight())
+				if (models[i]->isLight())
 				{
-					Color& c = models[i]->getMaterial()->difColor;
-					c.setValue(c.getHSV().z*0.9);
+					Color &c = models[i]->getMaterial()->difColor;
+					c.setValue(c.getHSV().z * 0.9);
 				}
 			}
 	        break;
 		case 'm':
 			for (int i = 0; i < models.size(); i++)
 			{
-				if(models[i]->isLight())
+				if (models[i]->isLight())
 				{
-					Color& c = models[i]->getMaterial()->difColor;
-					c.setSaturation(c.getHSV().y*1.1);
+					Color &c = models[i]->getMaterial()->difColor;
+					c.setSaturation(c.getHSV().y * 1.1);
 				}
 			}
 	        break;
 		case ',':
 			for (int i = 0; i < models.size(); i++)
 			{
-				if(models[i]->isLight())
+				if (models[i]->isLight())
 				{
-					Color& c = models[i]->getMaterial()->difColor;
-					c.setSaturation(c.getHSV().y*0.9);
+					Color &c = models[i]->getMaterial()->difColor;
+					c.setSaturation(c.getHSV().y * 0.9);
 				}
 			}
 	        break;
@@ -226,7 +227,7 @@ void GlutMainLoop::keyboardFunc(uint8_t k, int x, int y)
 	        scene->getCameraSystem().setPosition(glm::vec3(0, 3.514, 1.623));
 	        scene->getCameraSystem().setRotation(glm::vec3(M_PI / 2, 0, M_PI / 2));
 	        for (int i = 0; i < models.size(); i++)
-				models[i]->resetTransformationMatrix();
+		        models[i]->resetTransformationMatrix();
 	        break;
 
 		default:

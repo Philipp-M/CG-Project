@@ -40,7 +40,8 @@ public:
 	/**
 	 * constructs a model with the given name, verticeData and indices
 	 */
-	Model(const std::string &name, const std::vector<Vertex3> &verticeData, const std::vector<GLuint> &indices, Material *mat, glm::vec3 centroid);
+	Model(const std::string &name, const std::vector<Vertex3> &verticeData, const std::vector<GLuint> &indices, Material *mat,
+	      glm::vec3 centroid);
 
 	/**
 	 * refreshes the buffer objects based on the local data(verticeData and indices)
@@ -52,7 +53,7 @@ public:
 	 * the shaderProgram has to have the uniform variables:
 	 * mat4 ModelMatrix, atrVec3 Position, atrVec3 Color
 	 */
-	void draw(const ShaderProgram &shaderProgram);
+	void draw(const ShaderProgram &shaderProgram, const glm::vec3 &cameraPosition);
 
 	/**
 	 * returns the name of the model
@@ -62,10 +63,15 @@ public:
 
 	Material *getMaterial();
 
+	bool isBillboard() const;
+
+	bool isBillboardCylinder() const;
+
+	bool isBillboardSphere() const;
+
 	bool isLight() const;
 
-
-	const glm::vec3 & getCentroid() const;
+	const glm::vec3 &getCentroid() const;
 
 /*** implemented from the interface Entity ***/
 
@@ -81,6 +87,10 @@ public:
 
 	void resetTransformationMatrix();
 
-	glm::mat4 getTransformationMatrix() const;
+	glm::mat4 getTransformationMatrix(const glm::vec3 &cameraPosition) const;
+
+	glm::mat4 billboardCylinder(const glm::vec3 &cameraPosition) const;
+
+	glm::mat4 billboardSphere(const glm::vec3 &cameraPosition) const;
 };
 

@@ -52,10 +52,10 @@ vec3 calcNormal()
 }
 void main()
 {
-	FragColor = vec4(0, 0, 0, 1.0);
     vec4 texColor = vec4(difColor, 1.0) * texture(diffuseTex, vTexCoord);
     if(texColor.a < 0.5)
         discard;
+	FragColor = vec4(0, 0, 0, 1.0);
     vec3 normal;
 	if(useNormalMapping == 1)
 		normal = calcNormal();

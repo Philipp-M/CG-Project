@@ -1,11 +1,61 @@
-# Blender MTL File: 'None'
-# Material Count: 12
+# Blender MTL File: 'merry3.blend'
+# Material Count: 22
+
+newmtl billboardCFlowersWhite
+Ns 96.078431
+Ka 0.000000 0.000000 0.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.500000 0.500000 0.500000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd textures/billboardblueflowers.png
+
+newmtl billboardCGrass1
+Ns 96.078431
+Ka 0.000000 0.000000 0.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.500000 0.500000 0.500000
+Ni 1.000000
+d 0.182432
+illum 2
+map_Kd textures/billboardgrass1.png
+
+newmtl billboardCGrass2
+Ns 96.078431
+Ka 0.000000 0.000000 0.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.500000 0.500000 0.500000
+Ni 1.000000
+d 0.189189
+illum 2
+map_Kd textures/billboardgrass2.png
+
+newmtl billboardCflowersRed
+Ns 96.078431
+Ka 0.000000 0.000000 0.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.500000 0.500000 0.500000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd textures/billboardredflowers.png
+
+newmtl billboardShealthBar
+Ns 96.078431
+Ka 0.000000 0.000000 0.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.500000 0.500000 0.500000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd textures/healthStatusBar.png
 
 newmtl ground
-Ns 86.274510
+Ns 84.313725
 Ka 0.000000 0.000000 0.000000
-Kd 1.000000 1.000000 1.000000
-Ks 0.500000 0.500000 0.500000
+Kd 0.800000 0.800000 0.800000
+Ks 1.000000 1.000000 1.000000
 Ni 1.000000
 d 1.000000
 illum 2
@@ -14,9 +64,9 @@ map_Ks textures/floor_specular.jpg
 map_Ns textures/floor_normal.jpg
 
 newmtl h_blue
-Ns 86.274510
+Ns 84.313725
 Ka 0.000000 0.000000 0.000000
-Kd 0.003175 0.000000 0.800000
+Kd 0.002540 0.000000 0.640000
 Ks 0.500000 0.500000 0.500000
 Ni 1.000000
 d 1.000000
@@ -25,9 +75,9 @@ map_Kd textures/horse_color.jpg
 map_Ns textures/horse_normal.jpg
 
 newmtl h_brown
-Ns 86.274510
+Ns 84.313725
 Ka 0.000000 0.000000 0.000000
-Kd 0.242708 0.100692 0.000000
+Kd 0.194166 0.080554 0.000000
 Ks 0.500000 0.500000 0.500000
 Ni 1.000000
 d 1.000000
@@ -36,9 +86,9 @@ map_Kd textures/horse_color.jpg
 map_Ns textures/horse_normal.jpg
 
 newmtl h_cyan
-Ns 86.274510
+Ns 84.313725
 Ka 0.000000 0.000000 0.000000
-Kd 0.000000 0.508509 0.800000
+Kd 0.000000 0.406807 0.640000
 Ks 0.500000 0.500000 0.500000
 Ni 1.000000
 d 1.000000
@@ -47,9 +97,9 @@ map_Kd textures/horse_color.jpg
 map_Ns textures/horse_normal.jpg
 
 newmtl h_green
-Ns 86.274510
+Ns 84.313725
 Ka 0.000000 0.000000 0.000000
-Kd 0.201880 0.800000 0.000000
+Kd 0.161504 0.640000 0.000000
 Ks 0.500000 0.500000 0.500000
 Ni 1.000000
 d 1.000000
@@ -58,9 +108,9 @@ map_Kd textures/horse_color.jpg
 map_Ns textures/horse_normal.jpg
 
 newmtl h_pink
-Ns 86.274510
+Ns 84.313725
 Ka 0.000000 0.000000 0.000000
-Kd 0.003175 0.000000 0.800000
+Kd 0.002540 0.000000 0.640000
 Ks 0.500000 0.500000 0.500000
 Ni 1.000000
 d 1.000000
@@ -69,9 +119,9 @@ map_Kd textures/horse_color.jpg
 map_Ns textures/horse_normal.jpg
 
 newmtl h_pink_color1.jpg.004
-Ns 86.274510
+Ns 84.313725
 Ka 0.000000 0.000000 0.000000
-Kd 0.800000 0.000000 0.138371
+Kd 0.640000 0.000000 0.110697
 Ks 0.500000 0.500000 0.500000
 Ni 1.000000
 d 1.000000
@@ -80,9 +130,9 @@ map_Kd textures/horse_color.jpg
 map_Ns textures/horse_normal.jpg
 
 newmtl h_purp
-Ns 86.274510
+Ns 84.313725
 Ka 0.000000 0.000000 0.000000
-Kd 0.294179 0.000000 0.800000
+Kd 0.235343 0.000000 0.640000
 Ks 0.500000 0.500000 0.500000
 Ni 1.000000
 d 1.000000
@@ -91,9 +141,9 @@ map_Kd textures/horse_color.jpg
 map_Ns textures/horse_normal.jpg
 
 newmtl h_red
-Ns 86.274510
+Ns 84.313725
 Ka 0.000000 0.000000 0.000000
-Kd 0.800000 0.000000 0.000000
+Kd 0.640000 0.000000 0.000000
 Ks 0.500000 0.500000 0.500000
 Ni 1.000000
 d 1.000000
@@ -102,9 +152,9 @@ map_Kd textures/horse_color.jpg
 map_Ns textures/horse_normal.jpg
 
 newmtl h_yellow
-Ns 86.274510
+Ns 84.313725
 Ka 0.000000 0.000000 0.000000
-Kd 0.800000 0.720000 0.000000
+Kd 0.640000 0.576000 0.000000
 Ks 0.500000 0.500000 0.500000
 Ni 1.000000
 d 1.000000
@@ -112,19 +162,64 @@ illum 2
 map_Kd textures/horse_color.jpg
 map_Ns textures/horse_normal.jpg
 
-newmtl pole
-Ns 86.274510
+newmtl lightMerry1
+Ns 96.078431
 Ka 0.000000 0.000000 0.000000
-Kd 0.327680 0.069317 0.172727
+Kd 12.552110 11.578030 10.392379
+Ks 0.500000 0.500000 0.500000
+Ni 1.000000
+d 1.000000
+illum 2
+
+newmtl lightMerry2
+Ns 96.078431
+Ka 0.000000 0.000000 0.000000
+Kd 8.65292370 13.005281 14.529650
+Ks 0.500000 0.500000 0.500000
+Ni 1.000000
+d 1.000000
+illum 2
+
+newmtl lightMerry3
+Ns 96.078431
+Ka 0.000000 0.000000 0.000000
+Kd 4.997506 1.25496913 0.850620
+Ks 0.500000 0.500000 0.500000
+Ni 1.000000
+d 1.000000
+illum 2
+
+newmtl lightMerry4
+Ns 96.078431
+Ka 0.000000 0.000000 0.000000
+Kd 4.7555447 6.004730 2.657113
+Ks 0.500000 0.500000 0.500000
+Ni 1.000000
+d 1.000000
+illum 2
+
+newmtl lightStatic2
+Ns 96.078431
+Ka 0.000000 0.000000 0.000000
+Kd 75.336334 69.234093 62.077137
+Ks 0.500000 0.500000 0.500000
+Ni 1.000000
+d 1.000000
+illum 2
+
+newmtl pole
+Ns 84.313725
+Ka 0.000000 0.000000 0.000000
+Kd 0.262144 0.055454 0.138182
 Ks 0.500000 0.500000 0.500000
 Ni 1.000000
 d 1.000000
 illum 2
 
 newmtl wall
-Ns 86.274510
+Ns 84.313725
 Ka 0.000000 0.000000 0.000000
-Kd 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
 Ks 0.500000 0.500000 0.500000
 Ni 1.000000
 d 1.000000
