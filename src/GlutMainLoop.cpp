@@ -22,6 +22,7 @@ void GlutMainLoop::onIdle()
 	CameraSystem &cameraSystem = scene->getCameraSystem();
 	cameraSystem.getCamera().setWidth(glutGet(GLUT_WINDOW_WIDTH));
 	cameraSystem.getCamera().setHeight(glutGet(GLUT_WINDOW_HEIGHT));
+	std::cout << "FPS: " << 1000.0/deltaElapsedTime << std::endl;
 	// move the camera
 	if (!automaticMode)
 	{
@@ -40,7 +41,7 @@ void GlutMainLoop::onIdle()
 	{
 		if (i == 3)
 			pLights[3].setPosition(
-					glm::vec3(10 * sin(0.0005 * glutGet(GLUT_ELAPSED_TIME)), 10 * cos(0.0007 * glutGet(GLUT_ELAPSED_TIME)), -10));
+				glm::vec3(10 * sin(0.0005 * glutGet(GLUT_ELAPSED_TIME)), 10 * cos(0.0007 * glutGet(GLUT_ELAPSED_TIME)), -10));
 	}
 	float oldMerryHeight1 = merryHeight1;
 	float oldMerryHeight2 = merryHeight2;

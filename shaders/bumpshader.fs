@@ -46,7 +46,7 @@ vec3 calcNormal()
     tangent = normalize(tangent - dot(tangent, normal) * normal);
     vec3 biTangent = cross(tangent, normal);
     vec3 nMapNormal = (2.0 *  texture(normalTex, vTexCoord).xyz - vec3(1.0, 1.0, 1.0));
-    nMapNormal = vec3(nMapNormal.x, nMapNormal.y, nMapNormal.z);
+    nMapNormal = vec3(nMapNormal.x, -nMapNormal.y, nMapNormal.z);
     mat3 TBN = mat3(tangent, biTangent, normal);
     return normalize(TBN * nMapNormal);
 }
@@ -85,15 +85,11 @@ void main()
 	    vec3 specLight = vec3(0, 0, 0);
 	    if(useSpecularLightning == 1)
 	    {
-	        if(cosNorm > 0.0)
-	        {
-	            vec3 posc = vec3(-cameraPosition.x, -cameraPosition.y, -cameraPosition.z);
-	            vec3 posToCamera = normalize(posc - vPosition);
-				vec3 refVector = reflect(-posToLight, normal);
-	            float cosRefl = max(0.0, dot(posToCamera,refVector));
-				float specCof = pow(cosRefl, 0.01+shine);
-				specLight = specCof * specColor ;
-			}
+	        vec3 posToCamera = normalize(-cameraPosition - vPosition);
+			vec3 refVector = reflect(-posToLight, normal);
+	        float cosRefl = max(0.0, dot(posToCamera,refVector));
+			float specCof = pow(cosRefl, 0.01+shine);
+			specLight = specCof * specColor ;
 	    }
 
 	    float attenuation = 1.0 / (1.0 + allPointLights[i].attenuation * disToLight * disToLight);
